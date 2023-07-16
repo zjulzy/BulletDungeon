@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "BulletDungeon/AbilitySystem/BdAbilitySystemComponent.h"
+#include "BdAnimationComponent.h"
 #include "BulletDungeon/AbilitySystem/Attributes/BdHealthAttributeSet.h"
 #include "BulletDungeon/AbilitySystem/Attributes/BdCombatAttributeSet.h"
 #include "BulletDungeon/AbilitySystem/Attributes/BdWeaponAttributeSet.h"

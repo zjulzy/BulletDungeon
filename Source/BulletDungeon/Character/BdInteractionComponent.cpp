@@ -22,63 +22,64 @@ void UBdInteractionComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
 }
 
 
 // Called every frame
-void UBdInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UBdInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
+                                            FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	APawn* Pawn =Cast<APawn>(this->GetOwner());
+	APawn* Pawn = Cast<APawn>(this->GetOwner());
 	APlayerController* Controller = Cast<APlayerController>(Pawn->GetController());
 	FVector EyeLocation;
 	FRotator EyeRotation;
-	Pawn->GetActorEyesViewPoint(EyeLocation,EyeRotation);
-	FVector Destination = EyeLocation+1000*EyeRotation.Vector();
+	Pawn->GetActorEyesViewPoint(EyeLocation, EyeRotation);
+	FVector Destination = EyeLocation + 1000 * EyeRotation.Vector();
 	// DrawDebugLine(GetWorld(),EyeLocation,Destination,FColor::Red,false,2.0f);
 	FHitResult HitResult;
 	FCollisionObjectQueryParams CollisionObjectQueryParams;
 	CollisionObjectQueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
-	
-	bool bIsHit = GetWorld()->LineTraceSingleByObjectType(HitResult,EyeLocation,Destination,CollisionObjectQueryParams);
 
-	if(bIsHit)
+	bool bIsHit = GetWorld()->LineTraceSingleByObjectType(HitResult, EyeLocation, Destination,
+	                                                      CollisionObjectQueryParams);
+
+	if (bIsHit)
 	{
 		AActor* HitActor = HitResult.GetActor();
-		if(HitActor->Implements<UBdInteractionInterface>())
+		if (HitActor->Implements<UBdInteractionInterface>())
 		{
-			if(IBdInteractionInterface::Execute_CanBeInteracted(HitActor))
+			if (IBdInteractionInterface::Execute_CanBeInteracted(HitActor))
 			{
-				if(!CurrentActor)
+				if (!CurrentActor)
 				{
 					// GEngine->AddOnScreenDebugMessage(-1,2.0f,FColor::Red,FString("捕获"));
 					IsInteractable = true;
-					OnInteractionChange.Broadcast(CurrentActor,IsInteractable);
+					OnInteractionChange.Broadcast(CurrentActor, IsInteractable);
 				}
 				CurrentActor = HitActor;
 			}
-			
-		}else
+		}
+		else
 		{
 			CurrentActor = nullptr;
 			IsInteractable = false;
-			OnInteractionChange.Broadcast(CurrentActor,IsInteractable);
+			OnInteractionChange.Broadcast(CurrentActor, IsInteractable);
 		}
-	}else
+	}
+	else
 	{
 		CurrentActor = nullptr;
 		IsInteractable = false;
-		OnInteractionChange.Broadcast(CurrentActor,IsInteractable);
+		OnInteractionChange.Broadcast(CurrentActor, IsInteractable);
 	}
 	// ...
 }
 
 void UBdInteractionComponent::Interact()
 {
-	if(CurrentActor)
+	if (CurrentActor)
 	{
-		IBdInteractionInterface::Execute_Interacted(CurrentActor,Cast<APawn>(GetOwner()));
+		IBdInteractionInterface::Execute_Interacted(CurrentActor, Cast<APawn>(GetOwner()));
 	}
 }
-

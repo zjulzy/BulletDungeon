@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
+#include "BulletDungeon/AbilitySystem/Abilities/BdGameplayAbility.h"
+#include "BulletDungeon/Equipments/Ammo/BdAmmoBase.h"
 #include "BulletDungeon/Equipments/BdEquipment.h"
 #include "BdWeaponBase.generated.h"
 
@@ -20,74 +22,74 @@ enum class EWeaponType:uint8
 	WeaponRifleDemo1,
 	WeaponRifleDemo2
 };
+
 UCLASS()
 class BULLETDUNGEON_API ABdWeaponBase : public ABdEquipment
 {
 	GENERATED_BODY()
-public:
 
+public:
 	ABdWeaponBase();
-	
-	UPROPERTY(BlueprintReadOnly,EditAnywhere,Category="射击")
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="射击")
 	float ShootSpeed;
 
 	UPROPERTY()
 	float AmmoSpeed;
 
-	UPROPERTY(BlueprintReadWrite,EditAnywhere,Category="射击")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="射击")
 	float Ammos;
-	
-	UPROPERTY(BlueprintReadOnly,EditAnywhere,Category="射击")
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="射击")
 	float MaxAmmos;
 
-	UPROPERTY(BlueprintReadOnly,EditAnywhere,Category="射击")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="射击")
 	float AmmoDamage;
-	
-	UFUNCTION(BlueprintNativeEvent,BlueprintCallable)
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void Shoot();
 
-	
+
 	UFUNCTION()
 	void AddWeaponAbilities();
 
 	UFUNCTION()
 	void RemoveWeaponAbilities();
-	
+
 	TSubclassOf<ABdAmmoBase> GetAmmoClass();
 
-	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void Equip();
-	
+
 	virtual void Equip_Implementation();
-	
-	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void UnEquip();
 
-	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void EquipFromInventory();
 
-	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void UnEquipFromInventory();
-	
-	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void Drop();
 
-	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Outpost|Weapon")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Outpost|Weapon")
 	EWeaponType WeaponType;
-	
+
 protected:
-	
-	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Outpost|Weapon")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Outpost|Weapon")
 	TSubclassOf<ABdAmmoBase> AmmoClass;
 
-	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Outpost|Weapon")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Outpost|Weapon")
 	FGameplayTag WeaponTag;
-	
+
 	// 武器给character赋予的能力以及spec，在装备和接触武器时进行add和remove
 	// 目前武器包含攻击能力和reload能力
-	UPROPERTY(BlueprintReadOnly,EditAnywhere, Category = "Outpost|Weapon")
-	TArray<TSubclassOf<UBdGameplayAbility>>Abilities;
-	
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Outpost|Weapon")
+	TArray<TSubclassOf<UBdGameplayAbility>> Abilities;
+
 	UPROPERTY(BlueprintReadOnly, Category = "Outpost|Weapon")
 	TArray<FGameplayAbilitySpecHandle> AbilitySpecHandles;
 
