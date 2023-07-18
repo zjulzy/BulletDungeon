@@ -13,9 +13,10 @@ UCLASS()
 class BULLETDUNGEON_API UBdGEDemageExecutionCalc : public UGameplayEffectExecutionCalculation
 {
 	GENERATED_BODY()
+
 public:
 	UBdGEDemageExecutionCalc();
 
-	virtual void Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const override;
-	
+	virtual void Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
+	                                    FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const override;
 };

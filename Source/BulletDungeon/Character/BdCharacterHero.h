@@ -76,6 +76,7 @@ class BULLETDUNGEON_API ABdCharacterHero : public ABdCharacterBase
 	UFUNCTION()
 	void Input_Aim(const FInputActionValue& InputValue);
 	
+	
 	UFUNCTION()
 	void Input_UnAim(const FInputActionValue& InputValue);
 
@@ -135,6 +136,8 @@ protected:
 	// Ability input handle ----------------------------------------------------------------------------------------------------
 	void TestAbilityInputTriggeredHandle();
 	void TestAbilityInputReleasedHandle();
+	void JumpAbilityInputTriggeredHandle();
+	void JumpAbilityInputReleasedHandle();
 	void AttackAbilityInputTriggeredHandle();
 	void AttackAbilityInputReleasedHandle();
 	void ReloadAbilityInputTriggeredHandle();

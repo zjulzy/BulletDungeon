@@ -22,7 +22,6 @@ void ABdWeaponBase::Shoot_Implementation()
 
 void ABdWeaponBase::AddWeaponAbilities()
 {
-	
 }
 
 void ABdWeaponBase::RemoveWeaponAbilities()
@@ -37,14 +36,16 @@ TSubclassOf<ABdAmmoBase> ABdWeaponBase::GetAmmoClass()
 void ABdWeaponBase::Equip_Implementation()
 {
 	//add abilities from spec handle
-	UBdAbilitySystemComponent* ASC = Cast<UBdAbilitySystemComponent>(Cast<ABdCharacterBase>(Equiper)->GetAbilitySystemComponent());
-	if(ASC)
+	UBdAbilitySystemComponent* ASC = Cast<UBdAbilitySystemComponent>(
+		Cast<ABdCharacterBase>(Equiper)->GetAbilitySystemComponent());
+	if (ASC)
 	{
-		for(TSubclassOf<UBdGameplayAbility> Ability:Abilities)
+		for (TSubclassOf<UBdGameplayAbility> Ability : Abilities)
 		{
-			FGameplayAbilitySpecHandle AbilityHandle = ASC->GiveAbility(FGameplayAbilitySpec(Ability,1,static_cast<int32>(Ability.GetDefaultObject()->AbilityInputID),this));
+			FGameplayAbilitySpecHandle AbilityHandle = ASC->GiveAbility(
+				FGameplayAbilitySpec(Ability, 1, static_cast<int32>(Ability.GetDefaultObject()->AbilityInputID), this));
 			AbilitySpecHandles.Add(AbilityHandle);
-			UKismetSystemLibrary::PrintString(this,Ability->GetName());
+			UKismetSystemLibrary::PrintString(this, Ability->GetName());
 		}
 
 		ABdCharacterHero* Hero = Cast<ABdCharacterHero>(Equiper);
@@ -59,10 +60,11 @@ void ABdWeaponBase::Equip_Implementation()
 void ABdWeaponBase::UnEquip_Implementation()
 {
 	// remove abilities from spec handle
-	UBdAbilitySystemComponent* ASC = Cast<UBdAbilitySystemComponent>(Cast<ABdCharacterBase>(Equiper)->GetAbilitySystemComponent());
-	if(ASC)
+	UBdAbilitySystemComponent* ASC = Cast<UBdAbilitySystemComponent>(
+		Cast<ABdCharacterBase>(Equiper)->GetAbilitySystemComponent());
+	if (ASC)
 	{
-		for(FGameplayAbilitySpecHandle AbilityHandle:AbilitySpecHandles)
+		for (FGameplayAbilitySpecHandle AbilityHandle : AbilitySpecHandles)
 		{
 			ASC->ClearAbility(AbilityHandle);
 		}
@@ -74,14 +76,14 @@ void ABdWeaponBase::UnEquip_Implementation()
 
 void ABdWeaponBase::EquipFromInventory_Implementation()
 {
-	SkeletalMeshComponent->SetVisibility(true,true);
-	
+	SkeletalMeshComponent->SetVisibility(true, true);
+
 	Equip_Implementation();
 }
 
 void ABdWeaponBase::UnEquipFromInventory_Implementation()
 {
-	SkeletalMeshComponent->SetVisibility(false,true);
+	SkeletalMeshComponent->SetVisibility(false, true);
 	UnEquip_Implementation();
 }
 
@@ -89,5 +91,5 @@ void ABdWeaponBase::Drop_Implementation()
 {
 	UnEquip_Implementation();
 	SetOwner(nullptr);
-	Equiper=nullptr;
+	Equiper = nullptr;
 }

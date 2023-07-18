@@ -63,8 +63,11 @@ void ABdCharacterHero::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		EnhancedInputComponent->BindAction(IA_Weapons, ETriggerEvent::Completed, this,
 		                                   &ABdCharacterHero::Input_WeaponListReleased);
 
-		EnhancedInputComponent->BindAction(IA_Aim, ETriggerEvent::Triggered, this, &ABdCharacterHero::Input_Aim);
+		EnhancedInputComponent->BindAction(IA_Aim, ETriggerEvent::Started, this, &ABdCharacterHero::Input_Aim);
 		EnhancedInputComponent->BindAction(IA_Aim, ETriggerEvent::Completed, this, &ABdCharacterHero::Input_UnAim);
+
+		EnhancedInputComponent->BindAction(IA_Jump,ETriggerEvent::Started,this,&ABdCharacterHero::JumpAbilityInputTriggeredHandle);
+		// EnhancedInputComponent->BindAction(IA_Jump,ETriggerEvent::Completed,this,&ABdCharacterHero::JumpAbilityInputReleasedHandle);
 
 		EnhancedInputComponent->BindAction(IA_SwitchWeapon, ETriggerEvent::Triggered, this,
 		                                   &ABdCharacterHero::Input_SwitchWeapon);
@@ -212,6 +215,7 @@ void ABdCharacterHero::PossessedBy(AController* NewController)
 			AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(TestStartupAbility, 1, 0, this));
 		}
 
+		//初始化所有初始技能
 		for (TSubclassOf<UBdGameplayAbility> Ability : StartupAbilities)
 		{
 			AbilitySystemComponent->GiveAbility(
@@ -321,6 +325,18 @@ void ABdCharacterHero::TestAbilityInputReleasedHandle()
 	SendLocalInputToASC(false, EAbilityInputID::IA_AbilityTest);
 }
 
+void ABdCharacterHero::JumpAbilityInputTriggeredHandle()
+{
+	UKismetSystemLibrary::PrintString(this,TEXT("跳跃"));
+	SendLocalInputToASC(true, EAbilityInputID::IA_AbilityJump);
+}
+
+void ABdCharacterHero::JumpAbilityInputReleasedHandle()
+{
+UKismetSystemLibrary::PrintString(this,TEXT("跳跃结束"));
+	SendLocalInputToASC(false, EAbilityInputID::IA_AbilityJump);	
+}
+
 void ABdCharacterHero::AttackAbilityInputTriggeredHandle()
 {
 	if (WeaponState != EWeaponState::No_Weapon)
@@ -340,13 +356,17 @@ void ABdCharacterHero::AttackAbilityInputReleasedHandle()
 
 void ABdCharacterHero::ReloadAbilityInputTriggeredHandle()
 {
+	if (WeaponState != EWeaponState::No_Weapon)
+	{
+		SendLocalInputToASC(true, EAbilityInputID::IA_AbilityReload);
+	}
 }
 
 void ABdCharacterHero::ReloadAbilityInputReleasedHandle()
 {
 	if (WeaponState != EWeaponState::No_Weapon)
 	{
-		SendLocalInputToASC(true, EAbilityInputID::IA_AbilityReload);
+		SendLocalInputToASC(false, EAbilityInputID::IA_AbilityReload);
 	}
 }
 

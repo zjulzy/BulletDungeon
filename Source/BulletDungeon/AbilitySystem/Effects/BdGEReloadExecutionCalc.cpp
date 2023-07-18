@@ -19,14 +19,15 @@ struct FBdReloadStatics
 		// We're not capturing anything from the Source in this example, but there could be like AttackPower attributes that you might want.
 
 		// Capture optional Damage set on the damage GE as a CalculationModifier under the ExecutionCalculation
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UBdWeaponAttributeSet,MaxAmmo , Target, true);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UBdWeaponAttributeSet, MaxAmmo, Target, true);
 
-		
+
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UBdWeaponAttributeSet, ReserveAmmo, Target, true);
 		// Capture the Target's Health. Don't snapshot.
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UBdWeaponAttributeSet, InventoryAmmo, Target, true);
 	}
 };
+
 static const FBdReloadStatics& ReloadStatics()
 {
 	static FBdReloadStatics DStatics;
@@ -42,7 +43,7 @@ UBdGEReloadExecutionCalc::UBdGEReloadExecutionCalc()
 }
 
 void UBdGEReloadExecutionCalc::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
-	FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
+                                                      FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
 	// Super::Execute_Implementation(ExecutionParams, OutExecutionOutput);
 	UAbilitySystemComponent* TargetAbilitySystemComponent = ExecutionParams.GetTargetAbilitySystemComponent();
@@ -64,30 +65,37 @@ void UBdGEReloadExecutionCalc::Execute_Implementation(const FGameplayEffectCusto
 	EvaluationParameters.TargetTags = TargetTags;
 
 	float MaxAmmo = 0.0f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(ReloadStatics().MaxAmmoDef, EvaluationParameters, MaxAmmo);
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(ReloadStatics().MaxAmmoDef, EvaluationParameters,
+	                                                           MaxAmmo);
 	MaxAmmo = FMath::Max<float>(MaxAmmo, 0.0f);
 
 	float ReserveAmmo = 0.0f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(ReloadStatics().ReserveAmmoDef, EvaluationParameters, ReserveAmmo);
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(ReloadStatics().ReserveAmmoDef, EvaluationParameters,
+	                                                           ReserveAmmo);
 	ReserveAmmo = FMath::Max<float>(ReserveAmmo, 0.0f);
 
 	float InventoryAmmo = 0.0f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(ReloadStatics().InventoryAmmoDef, EvaluationParameters, InventoryAmmo);
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(ReloadStatics().InventoryAmmoDef, EvaluationParameters,
+	                                                           InventoryAmmo);
 	InventoryAmmo = FMath::Max<float>(InventoryAmmo, 0.0f);
 
 	float Cost = MaxAmmo - ReserveAmmo;
-	UKismetSystemLibrary::PrintString(this,FString::FromInt(static_cast<int>(MaxAmmo)));
-	float NewReserveAmmo,NewInventoryAmmo;
-	if(Cost >InventoryAmmo)
+	UKismetSystemLibrary::PrintString(this, FString::FromInt(static_cast<int>(MaxAmmo)));
+	float NewReserveAmmo, NewInventoryAmmo;
+	if (Cost > InventoryAmmo)
 	{
-		NewReserveAmmo  = ReserveAmmo + InventoryAmmo;
+		NewReserveAmmo = ReserveAmmo + InventoryAmmo;
 		NewInventoryAmmo = 0;
-	}else
+	}
+	else
 	{
 		NewReserveAmmo = MaxAmmo;
-		NewInventoryAmmo = InventoryAmmo-Cost;
+		NewInventoryAmmo = InventoryAmmo - Cost;
 	}
-	
-	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(ReloadStatics().ReserveAmmoProperty, EGameplayModOp::Override, NewReserveAmmo));
-	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(ReloadStatics().InventoryAmmoProperty, EGameplayModOp::Override, NewInventoryAmmo));
+
+	OutExecutionOutput.AddOutputModifier(
+		FGameplayModifierEvaluatedData(ReloadStatics().ReserveAmmoProperty, EGameplayModOp::Override, NewReserveAmmo));
+	OutExecutionOutput.AddOutputModifier(
+		FGameplayModifierEvaluatedData(ReloadStatics().InventoryAmmoProperty, EGameplayModOp::Override,
+		                               NewInventoryAmmo));
 }

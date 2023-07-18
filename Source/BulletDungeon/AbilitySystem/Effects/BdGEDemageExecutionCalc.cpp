@@ -24,12 +24,13 @@ struct FBdDamageStatics
 		// Capture optional Damage set on the damage GE as a CalculationModifier under the ExecutionCalculation
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UBdWeaponAttributeSet, AmmoDamage, Source, true);
 
-		
+
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UBdCombatAttributeSet, AttackMulti, Source, true);
 		// Capture the Target's Health. Don't snapshot.
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UBdHealthAttributeSet, Health, Target, false);
 	}
 };
+
 static const FBdDamageStatics& DamageStatics()
 {
 	static FBdDamageStatics DStatics;
@@ -44,7 +45,7 @@ UBdGEDemageExecutionCalc::UBdGEDemageExecutionCalc()
 }
 
 void UBdGEDemageExecutionCalc::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
-	FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
+                                                      FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
 	// Super::Execute_Implementation(ExecutionParams, OutExecutionOutput);
 	UAbilitySystemComponent* TargetAbilitySystemComponent = ExecutionParams.GetTargetAbilitySystemComponent();
@@ -66,24 +67,27 @@ void UBdGEDemageExecutionCalc::Execute_Implementation(const FGameplayEffectCusto
 	EvaluationParameters.TargetTags = TargetTags;
 
 	float AmmoDamage = 0.0f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().AmmoDamageDef, EvaluationParameters, AmmoDamage);
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().AmmoDamageDef, EvaluationParameters,
+	                                                           AmmoDamage);
 	AmmoDamage = FMath::Max<float>(AmmoDamage, 0.0f);
 
 	float AttackMulti = 0.0f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().AttackMultiDef, EvaluationParameters, AttackMulti);
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().AttackMultiDef, EvaluationParameters,
+	                                                           AttackMulti);
 	AttackMulti = FMath::Max<float>(AttackMulti, 0.0f);
 
 	float Health = 0.0f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().HealthDef, EvaluationParameters, Health);
 	Health = FMath::Max<float>(Health, 0.0f);
-	
-	float HitDamage = AmmoDamage*AttackMulti;
-	
-	if(HitDamage>0)
+
+	float HitDamage = AmmoDamage * AttackMulti;
+
+	if (HitDamage > 0)
 	{
-		UKismetSystemLibrary::PrintString(this,"cause damage"+FString::SanitizeFloat(HitDamage));
-		UKismetSystemLibrary::PrintString(this,"Target health"+FString::SanitizeFloat(Health));
+		UKismetSystemLibrary::PrintString(this, "cause damage" + FString::SanitizeFloat(HitDamage));
+		UKismetSystemLibrary::PrintString(this, "Target health" + FString::SanitizeFloat(Health));
 		// Set the Target's damage meta attribute
-		OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics().HealthProperty, EGameplayModOp::Additive, HitDamage*-1));
+		OutExecutionOutput.AddOutputModifier(
+			FGameplayModifierEvaluatedData(DamageStatics().HealthProperty, EGameplayModOp::Additive, HitDamage * -1));
 	}
 }

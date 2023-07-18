@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
+#include "Character/BdCharacterBase.h"
 #include "GameFramework/GameStateBase.h"
 #include "BdGameStateBase.generated.h"
 

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Environment/BdTransport.h"
 #include "GameFramework/GameModeBase.h"
 #include "BulletDungeonGameModeBase.generated.h"
 

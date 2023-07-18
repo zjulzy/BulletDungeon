@@ -13,5 +13,4 @@ UCLASS()
 class BULLETDUNGEON_API ABdPlayerController : public APlayerController
 {
 	GENERATED_BODY()
-	
 };

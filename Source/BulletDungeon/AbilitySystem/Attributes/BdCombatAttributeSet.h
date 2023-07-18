@@ -22,4 +22,14 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "BulletDungeon|Combat")
 	FGameplayAttributeData AttackMulti;
 	ATTRIBUTE_ACCESSORS(UBdCombatAttributeSet, AttackMulti)
+
+	//防御力可以等效降低伤害
+	UPROPERTY(BlueprintReadOnly, Category = "BulletDungeon|Combat")
+	FGameplayAttributeData Defence;
+	ATTRIBUTE_ACCESSORS(UBdCombatAttributeSet, Defence)
+
+	//穿甲值
+	UPROPERTY(BlueprintReadOnly, Category = "BulletDungeon|Combat")
+	FGameplayAttributeData Penetrate;
+	ATTRIBUTE_ACCESSORS(UBdCombatAttributeSet, Penetrate)
 };
