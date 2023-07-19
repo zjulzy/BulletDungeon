@@ -7,7 +7,11 @@
 
 ABdWeaponBase* UBdWeaponSwitchUI::GetCurrentWeapon()
 {
-	return InventoryWeapons[CurrentWeaponID];
+	if(CurrentWeaponID>=0)
+	{
+		return InventoryWeapons[CurrentWeaponID];
+	}
+	return nullptr;
 }
 
 ABdWeaponBase* UBdWeaponSwitchUI::SetCurrentWeapon(ABdWeaponBase* NewWeapon)

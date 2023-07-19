@@ -152,7 +152,11 @@ void ABdCharacterHero::Input_WeaponListReleased(const FInputActionValue& InputVa
 {
 	bActivateWeaponSwitch = false;
 	WeaponSwitchUI->SetVisibility(ESlateVisibility::Hidden);
-	Set_Weapon(WeaponSwitchUI->GetCurrentWeapon());
+	if(WeaponSwitchUI->GetCurrentWeapon())
+	{
+		Set_Weapon(WeaponSwitchUI->GetCurrentWeapon());
+	}
+	
 }
 
 void ABdCharacterHero::Input_Inventory(const FInputActionValue& InputValue)

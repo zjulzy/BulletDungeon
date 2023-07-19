@@ -42,6 +42,9 @@ protected:
 
 	UPROPERTY()
 	class UBdStatusBar* StatusBar;
+
+	UPROPERTY(BlueprintReadWrite)
+	ABdCharacterBase* AttackTarget;
 	// --------------------------------------------------------------------------------------------------------------------------
 	
 	UPROPERTY()
