@@ -10,11 +10,17 @@
 /**
  * 
  */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRefreshLevel);
 UCLASS()
 class BULLETDUNGEON_API ABulletDungeonGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 public:
+
+	//在进入新的关卡之后通知UI等进行刷新
+	UPROPERTY(BlueprintCallable)
+	FRefreshLevel RefreshLevel;
+	
 	ABulletDungeonGameModeBase();
 	virtual void BeginPlay() override;
 	

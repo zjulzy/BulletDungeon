@@ -17,8 +17,11 @@ USTRUCT(BlueprintType)
 struct FLevelGoalTableRow : public FTableRowBase
 {
 	GENERATED_BODY()
+
 public:
-	FLevelGoalTableRow() {};
+	FLevelGoalTableRow()
+	{
+	};
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "BulletDungeon")
 	int32 EnemyBaseNum;
@@ -29,31 +32,34 @@ public:
 	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Outpost|LevelGoal")
 	// uint8 Type;
 };
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FonFinishedLevelGoal);
+
 UCLASS()
 class BULLETDUNGEON_API ABdGameStateBase : public AGameStateBase
 {
 	GENERATED_BODY()
+
 public:
 	ABdGameStateBase();
-	TSubclassOf<ABdCharacterBase>EnemyBaseClass;
-    
+	TSubclassOf<ABdCharacterBase> EnemyBaseClass;
+
 	UFUNCTION(BlueprintCallable)
-	TMap<TSubclassOf<UObject>,int> GetUnfinishedGoal();
-    	
+	TMap<TSubclassOf<UObject>, int> GetUnfinishedGoal();
+
 	UFUNCTION(BlueprintCallable)
 	void ResetGoal(FName LevelName);
-    
+
 	UFUNCTION(BlueprintCallable)
-	bool FinishGoal(TSubclassOf<UObject>goal,int num);
-    
+	bool FinishGoal(TSubclassOf<UObject> goal, int num);
+
 	UFUNCTION(BlueprintCallable)
 	void OnEnemyKilled(TSubclassOf<ABdCharacterAI> EnemyClass);
-    	
+
 	FonFinishedLevelGoal OnFinishedLevelGoal;
 
 	UFUNCTION(BlueprintCallable)
-	TMap<TSubclassOf<ABdCharacterAI>,int> GetCurrentEnemies();
+	TMap<TSubclassOf<ABdCharacterAI>, int> GetCurrentEnemies();
 
 	UFUNCTION(BlueprintCallable)
 	void OnReduceEnemy(TSubclassOf<ABdCharacterAI> EnemyClass);
@@ -63,16 +69,16 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	float GetCurrentWeights();
+
 protected:
 	UPROPERTY(BlueprintReadWrite)
-	TMap<TSubclassOf<ABdCharacterAI>,int> CurrentEnemies;
+	TMap<TSubclassOf<ABdCharacterAI>, int> CurrentEnemies;
 
 	UPROPERTY(BlueprintReadWrite)
 	float CurrentWeights;
 
 	UPROPERTY(BlueprintReadWrite)
-	TMap<TSubclassOf<UObject>,int>UnfinishedGoal;
+	TMap<TSubclassOf<UObject>, int> UnfinishedGoal;
 
 	int Difficulty;
-	
 };

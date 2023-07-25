@@ -35,6 +35,10 @@ protected:
 	UPROPERTY(BlueprintReadWrite)
 	APawn* Equiper;
 
+	// 装备在加入到背包之后可以使用产生一定效果
+	UFUNCTION(BlueprintCallable,BlueprintImplementableEvent)
+	void Use();
+
 	
 
 public:

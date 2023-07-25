@@ -15,7 +15,6 @@ ABdPlayerState::ABdPlayerState()
 	HealthAttributes = CreateDefaultSubobject<UBdHealthAttributeSet>("HealthAttributes");
 	CombatAttributes = CreateDefaultSubobject<UBdCombatAttributeSet>("CombatAttributes");
 	WeaponAttributes = CreateDefaultSubobject<UBdWeaponAttributeSet>("WeaponAttributes");
-	
 }
 
 UAbilitySystemComponent* ABdPlayerState::GetAbilitySystemComponent() const

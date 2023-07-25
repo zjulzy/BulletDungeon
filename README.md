@@ -27,3 +27,5 @@ Developed with Unreal Engine 5
 - [ ] 选择buff的可视化界面
 - [ ] 背包可视化界面
 - [ ] buff详情可视化界面
+- [ ] 角色死亡相关处理
+- [ ] 完善过关流程

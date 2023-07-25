@@ -66,7 +66,8 @@ void ABdCharacterHero::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		EnhancedInputComponent->BindAction(IA_Aim, ETriggerEvent::Started, this, &ABdCharacterHero::Input_Aim);
 		EnhancedInputComponent->BindAction(IA_Aim, ETriggerEvent::Completed, this, &ABdCharacterHero::Input_UnAim);
 
-		EnhancedInputComponent->BindAction(IA_Jump,ETriggerEvent::Started,this,&ABdCharacterHero::JumpAbilityInputTriggeredHandle);
+		EnhancedInputComponent->BindAction(IA_Jump, ETriggerEvent::Started, this,
+		                                   &ABdCharacterHero::JumpAbilityInputTriggeredHandle);
 		// EnhancedInputComponent->BindAction(IA_Jump,ETriggerEvent::Completed,this,&ABdCharacterHero::JumpAbilityInputReleasedHandle);
 
 		EnhancedInputComponent->BindAction(IA_SwitchWeapon, ETriggerEvent::Triggered, this,
@@ -152,11 +153,10 @@ void ABdCharacterHero::Input_WeaponListReleased(const FInputActionValue& InputVa
 {
 	bActivateWeaponSwitch = false;
 	WeaponSwitchUI->SetVisibility(ESlateVisibility::Hidden);
-	if(WeaponSwitchUI->GetCurrentWeapon())
+	if (WeaponSwitchUI->GetCurrentWeapon())
 	{
 		Set_Weapon(WeaponSwitchUI->GetCurrentWeapon());
 	}
-	
 }
 
 void ABdCharacterHero::Input_Inventory(const FInputActionValue& InputValue)
@@ -337,8 +337,8 @@ void ABdCharacterHero::JumpAbilityInputTriggeredHandle()
 
 void ABdCharacterHero::JumpAbilityInputReleasedHandle()
 {
-UKismetSystemLibrary::PrintString(this,TEXT("跳跃结束"));
-	SendLocalInputToASC(false, EAbilityInputID::IA_AbilityJump);	
+	UKismetSystemLibrary::PrintString(this,TEXT("跳跃结束"));
+	SendLocalInputToASC(false, EAbilityInputID::IA_AbilityJump);
 }
 
 void ABdCharacterHero::AttackAbilityInputTriggeredHandle()

@@ -19,12 +19,12 @@ ABdStartUpGameModeBase::ABdStartUpGameModeBase()
 
 void ABdStartUpGameModeBase::InitializeStartUpUI(APlayerController* NewPlayer)
 {
-	if(StartUpUIClass)
+	if (StartUpUIClass)
 	{
-		UKismetSystemLibrary::PrintString(this,"1");
+		UKismetSystemLibrary::PrintString(this, "1");
 
-		 
-		StartUpUI = CreateWidget<UUserWidget>(NewPlayer,StartUpUIClass);
+
+		StartUpUI = CreateWidget<UUserWidget>(NewPlayer, StartUpUIClass);
 		StartUpUI->AddToViewport();
 	}
 }
