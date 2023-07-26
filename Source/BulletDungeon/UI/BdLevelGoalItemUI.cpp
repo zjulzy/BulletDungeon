@@ -3,8 +3,13 @@
 
 #include "BdLevelGoalItemUI.h"
 
-void UBdLevelGoalItemUI::SetGoal(FString& GoalString, int FinishedNum, int TotalNum)
+
+void UBdLevelGoalItemUI::SetGoal(TSubclassOf<UObject> GoalType, int FinishedNum, int TotalNum)
 {
 	//依据传入的levelgoal格式化item ui中的内容
-	GoalTextBlock->SetText(FText::Format(FText::FromString("{0}:{1}/{2}"),ConvertMap[GoalString], (FinishedNum), (TotalNum)));
+	GoalTextBlock->SetText(FText::Format(FText::FromString("{0}:{1}/{2}"),
+	                                     IBdGoalDisplayInterface::Execute_GetDisplayName(GoalType.GetDefaultObject()),
+	                                     (FinishedNum), (TotalNum)));
+	GoalClass = GoalType;
+	Remain=FinishedNum;
 }

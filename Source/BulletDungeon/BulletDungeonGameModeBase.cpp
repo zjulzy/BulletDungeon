@@ -3,12 +3,6 @@
 
 #include "BulletDungeonGameModeBase.h"
 
-#include "BdGameStateBase.h"
-#include "Character/BdCharacterHero.h"
-#include "Character/AI/BdCharacterAI.h"
-#include "Environment/BdTransport.h"
-#include "Player/BdPlayerController.h"
-#include "Player/BdPlayerState.h"
 
 ABulletDungeonGameModeBase::ABulletDungeonGameModeBase()
 {
@@ -21,7 +15,7 @@ ABulletDungeonGameModeBase::ABulletDungeonGameModeBase()
 
 	CurrentLevelLocation = FVector(0, 0, 0);
 
-	LevelNames = {FName("L_DemoMap"), FName("L_NextMap")};
+	LevelNames = {FName("L_StartLevel"), FName("L_DemoMap"), FName("L_NextMap")};
 }
 
 void ABulletDungeonGameModeBase::BeginPlay()
@@ -33,7 +27,7 @@ void ABulletDungeonGameModeBase::BeginPlay()
 
 FVector ABulletDungeonGameModeBase::GetNextLevelLocation()
 {
-	return FVector(30000, 0, 0);
+	return FVector(CurrentLevelLocation.X + 30000, 0, 0);
 }
 
 void ABulletDungeonGameModeBase::LoadAndTravelNewLevel_Implementation()

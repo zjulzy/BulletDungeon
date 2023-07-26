@@ -5,6 +5,12 @@
 #include "CoreMinimal.h"
 #include "Environment/BdTransport.h"
 #include "GameFramework/GameModeBase.h"
+#include "BdGameStateBase.h"
+#include "Character/BdCharacterHero.h"
+#include "Environment/BdTransport.h"
+#include "Player/BdPlayerController.h"
+#include "Player/BdPlayerState.h"
+#include "Character/AI/BdCharacterAI.h"
 #include "BulletDungeonGameModeBase.generated.h"
 
 /**
@@ -46,12 +52,13 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TArray<FName>LevelNames;
 
-	UPROPERTY(EditAnywhere,Category="Outpost")
+	UPROPERTY(EditAnywhere,Category="BulletDungeon")
 	TSubclassOf<ABdTransport> TransportClass;
 
 	UPROPERTY(BlueprintReadWrite)
 	TObjectPtr<ULevelStreaming> CurrentLevel;
 
+	UPROPERTY(BlueprintReadWrite)
 	FVector CurrentLevelLocation;
 	int LevelID;
 

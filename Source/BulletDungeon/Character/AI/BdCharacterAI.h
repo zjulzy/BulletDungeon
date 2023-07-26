@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "BulletDungeon/Character/BdCharacterBase.h"
+#include "BulletDungeon/System/Tasks/BdGoalDisplayInterface.h"
 #include "BulletDungeon/UI/BdStatusBar.h"
 
 #include "BdCharacterAI.generated.h"
@@ -12,10 +13,14 @@
  * 
  */
 UCLASS()
-class BULLETDUNGEON_API ABdCharacterAI : public ABdCharacterBase
+class BULLETDUNGEON_API ABdCharacterAI : public ABdCharacterBase,public IBdGoalDisplayInterface
 {
 	GENERATED_BODY()
+	
 public:
+
+	virtual FText GetDisplayName_Implementation() override;
+	
 	DECLARE_MULTICAST_DELEGATE_OneParam(FOnKilledEnemy,TSubclassOf<ABdCharacterAI>);
 	FOnKilledEnemy OnKilledEnemy;
 	
@@ -30,7 +35,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	float GetWeight();
-
 	
 protected:
 	// UI 相关 property，主要是血条--------------------------------------------------------------------------------------------------

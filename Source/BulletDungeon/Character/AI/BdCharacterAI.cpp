@@ -14,6 +14,12 @@
 #include "Components/WidgetComponent.h"
 #include "Kismet/GameplayStatics.h"
 
+
+FText ABdCharacterAI::GetDisplayName_Implementation()
+{
+	return FText::FromString("empty");
+}
+
 ABdCharacterAI::ABdCharacterAI()
 {
 	AbilitySystemComponent = CreateDefaultSubobject<UBdAbilitySystemComponent>("AbilitySystemComponent");
@@ -85,6 +91,7 @@ float ABdCharacterAI::GetWeight()
 {
 	return weight;
 }
+
 
 void ABdCharacterAI::BeginPlay()
 {

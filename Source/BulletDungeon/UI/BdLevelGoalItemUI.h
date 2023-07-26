@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/TextBlock.h"
+#include "BulletDungeon/System/Tasks/BdGoalDisplayInterface.h"
 #include "BdLevelGoalItemUI.generated.h"
 
 /**
@@ -14,14 +15,18 @@ UCLASS()
 class BULLETDUNGEON_API UBdLevelGoalItemUI : public UUserWidget
 {
 	GENERATED_BODY()
+
 public:
-	void SetGoal(FString& GoalString, int FinishedNum,int TotalNum);
+	UPROPERTY()
+	TSubclassOf<UObject>GoalClass;
+
+	UPROPERTY()
+	int Remain;
+	
+	void SetGoal(TSubclassOf<UObject>GoalType, int FinishedNum, int TotalNum);
 
 protected:
-	static TMap<FString,FText> ConvertMap = {
-		{"",FText::FromString("")},
-	};
-	
+	// static const TMap<TSubclassOf<UObject>, FText> ConvertMap;
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* GoalTextBlock;
 };

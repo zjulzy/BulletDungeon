@@ -13,12 +13,14 @@ ABdGameStateBase::ABdGameStateBase()
 
 	// 初始化所有敌人的class
 	EnemyBaseClass = ConstructorHelpers::FClassFinder<ABdCharacterAI>(TEXT("/Script/Engine.Blueprint'/Game/Characters/AI/BP_DemoEnemy.BP_DemoEnemy_C'")).Class;
+	OnFinishGoal.AddDynamic(this,&ABdGameStateBase::FinishGoal);
 }
 
 TMap<TSubclassOf<UObject>, int> ABdGameStateBase::GetUnfinishedGoal()
 {
 	return UnfinishedGoal;
 }
+
 
 void ABdGameStateBase::ResetGoal(FName LevelName)
 {
@@ -29,7 +31,7 @@ void ABdGameStateBase::ResetGoal(FName LevelName)
 
 	//通过datatable初始化unfinishedgoals
 	UDataTable* const LevelGoalDataTable = LoadObject<UDataTable>(this, TEXT("/Script/Engine.DataTable'/Game/Maps/Data/DT_LevelGoals.DT_LevelGoals'"));
-	if(LevelGoalDataTable)
+		if(LevelGoalDataTable)
 	{
 		FLevelGoalTableRow* Row = LevelGoalDataTable->FindRow<FLevelGoalTableRow>(LevelName,TEXT("name"));
 		if(Row)
@@ -43,27 +45,26 @@ void ABdGameStateBase::ResetGoal(FName LevelName)
 	}
 }
 
-bool ABdGameStateBase::FinishGoal(TSubclassOf<UObject> goal, int num)
+void ABdGameStateBase::FinishGoal(TSubclassOf<UObject> GoalClass, int Num)
 {
-	int* number = UnfinishedGoal.Find(goal);
+	int* number = UnfinishedGoal.Find(GoalClass);
 	if(number)
 	{
-		(*number)-=num;
+		(*number)-=Num;
 	}else
 	{
-		return false;
+		return ;
 	}
 	for(auto i = UnfinishedGoal.CreateIterator();i;++i)
 	{
-		if(i.Value()!=0)return true;
+		if(i.Value()!=0)return ;
 	}
 	OnFinishedLevelGoal.Broadcast();
-	return true;
 }
 
 void ABdGameStateBase::OnEnemyKilled(TSubclassOf<ABdCharacterAI> EnemyClass)
 {
-	FinishGoal(EnemyClass,1);
+	OnFinishGoal.Broadcast(EnemyClass,1);
 }
 
 TMap<TSubclassOf<ABdCharacterAI>, int> ABdGameStateBase::GetCurrentEnemies()

@@ -34,6 +34,7 @@ public:
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FonFinishedLevelGoal);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnFinishGoal,TSubclassOf<UObject>,GoalClass,int,Num);
 
 UCLASS()
 class BULLETDUNGEON_API ABdGameStateBase : public AGameStateBase
@@ -41,6 +42,8 @@ class BULLETDUNGEON_API ABdGameStateBase : public AGameStateBase
 	GENERATED_BODY()
 
 public:
+	FOnFinishGoal OnFinishGoal;
+	
 	ABdGameStateBase();
 	TSubclassOf<ABdCharacterBase> EnemyBaseClass;
 
@@ -51,7 +54,7 @@ public:
 	void ResetGoal(FName LevelName);
 
 	UFUNCTION(BlueprintCallable)
-	bool FinishGoal(TSubclassOf<UObject> goal, int num);
+	void FinishGoal(TSubclassOf<UObject> GoalClass, int Num);
 
 	UFUNCTION(BlueprintCallable)
 	void OnEnemyKilled(TSubclassOf<ABdCharacterAI> EnemyClass);

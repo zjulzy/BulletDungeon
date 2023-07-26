@@ -4,6 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/VerticalBox.h"
+#include "BdLevelGoalItemUI.h"
+#include "BulletDungeon/BdGameStateBase.h"
+#include "BulletDungeon/BulletDungeonGameModeBase.h"
+#include "Kismet/GameplayStatics.h"
 #include "BdLevelGoalUI.generated.h"
 
 /**
@@ -16,7 +21,7 @@ class BULLETDUNGEON_API UBdLevelGoalUI : public UUserWidget
 
 public:
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<UBdLevelGoalUI> GoalItemClass;
+	TSubclassOf<UBdLevelGoalItemUI> GoalItemClass;
 
 	void NativeConstruct() override;
 
@@ -25,5 +30,11 @@ protected:
 	void UpdateUI();
 
 	UPROPERTY()
-	TArray<TSubclassOf<UBdLevelGoalUI>> GoalItems;
+	TArray<UUserWidget*> GoalItems;
+
+	UPROPERTY(VisibleAnywhere,meta=(BindWidget))
+	UVerticalBox* GoalPanel;
+
+	UFUNCTION(BlueprintCallable)
+	void UpdateGoal(TSubclassOf<UObject> GoalType,int Num);
 };
