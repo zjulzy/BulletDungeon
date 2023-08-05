@@ -6,6 +6,7 @@
 #include "Environment/BdTransport.h"
 #include "GameFramework/GameModeBase.h"
 #include "BdGameStateBase.h"
+#include "AbilitySystem/Buffs/BdBuffBase.h"
 #include "Character/BdCharacterHero.h"
 #include "Environment/BdTransport.h"
 #include "Player/BdPlayerController.h"
@@ -45,6 +46,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void LevelFinished();
+
+	UFUNCTION(BlueprintCallable)
+	void GetPassBuff(TArray<UBdBuffBase*> CurrentBuffs);
 protected:
 	UPROPERTY(EditAnywhere)
 	int MaxLevel;

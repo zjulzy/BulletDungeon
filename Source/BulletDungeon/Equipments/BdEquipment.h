@@ -36,10 +36,9 @@ protected:
 	APawn* Equiper;
 
 	// 装备在加入到背包之后可以使用产生一定效果
-	UFUNCTION(BlueprintCallable,BlueprintImplementableEvent)
+	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
 	void Use();
-
-	
+	virtual void Use_Implementation();
 
 public:
 	UFUNCTION(BlueprintCallable)

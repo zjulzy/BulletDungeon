@@ -3,3 +3,12 @@
 
 #include "BdHealer.h"
 
+
+ABdHealer::ABdHealer()
+{
+}
+
+void ABdHealer::Use_Implementation()
+{
+	Super::Use_Implementation();
+}

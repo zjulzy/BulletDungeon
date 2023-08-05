@@ -13,5 +13,12 @@ UCLASS()
 class BULLETDUNGEON_API ABdHealer : public ABdEquipment
 {
 	GENERATED_BODY()
-	
+
+public:
+	ABdHealer();
+
+	virtual void Use_Implementation() override;
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float HealAmount;
 };

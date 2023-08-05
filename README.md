@@ -4,6 +4,7 @@ Developed with Unreal Engine 5
 
 基于UE5的rougelike TPS闯关游戏
 ## 项目简介
+![](image.jpg)
 ## 游戏流程
 ## 项目结构
 1. AbilitySysten/: GAS相关文件
@@ -26,6 +27,7 @@ Developed with Unreal Engine 5
 - [ ] 设计关卡通过后可以选择的buff
 - [ ] 选择buff的可视化界面
 - [ ] 背包可视化界面
+- [ ] 完善武器系统
 - [ ] buff详情可视化界面
 - [ ] 角色死亡相关处理
-- [ ] 完善过关流程
+- [x] 完善过关流程

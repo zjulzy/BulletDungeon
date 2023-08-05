@@ -68,3 +68,9 @@ void ABulletDungeonGameModeBase::LevelFinished()
 
 	GetWorld()->SpawnActor(TransportClass, &CurrentLevelLocation, &SpawnRotator, SpawnParameters);
 }
+
+// buff选择界面调用，根据当前通过关卡难度，返回若干个buff
+void ABulletDungeonGameModeBase::GetPassBuff(TArray<UBdBuffBase*> CurrentBuffs)
+{
+	//TODO: 根据目前难度等级返回buff
+}

@@ -29,6 +29,10 @@ void ABdEquipment::SetEquiper(APawn* NewEquiper)
 	Equiper = NewEquiper;
 }
 
+void ABdEquipment::Use_Implementation()
+{
+}
+
 void ABdEquipment::Interacted_Implementation(APawn* InstigatorPawn)
 {
 	IBdInteractionInterface::Interacted_Implementation(InstigatorPawn);
