@@ -60,17 +60,28 @@ int ABulletDungeonGameModeBase::GetDifficulty()
 
 void ABulletDungeonGameModeBase::LevelFinished()
 {
-	//TODO:在关卡通过后的操作
+	// 在关卡通过后的操作
 	FActorSpawnParameters SpawnParameters;
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 	SpawnParameters.Instigator = nullptr;
 	FRotator SpawnRotator = FRotator(0, 0, 0);
 
 	GetWorld()->SpawnActor(TransportClass, &CurrentLevelLocation, &SpawnRotator, SpawnParameters);
+
+	// 为玩家生成buff选择界面
+	ABdPlayerController* PC = Cast<ABdPlayerController>(GetWorld()->GetFirstPlayerController());
+	UUserWidget* BuffSelectUI = CreateWidget<UUserWidget>(PC, BuffSelectUIClass);
+	BuffSelectUI->AddToViewport(1);
 }
 
 // buff选择界面调用，根据当前通过关卡难度，返回若干个buff
-void ABulletDungeonGameModeBase::GetPassBuff(TArray<UBdBuffBase*> CurrentBuffs)
+void ABulletDungeonGameModeBase::GetPassBuff(TArray<UBdBuffBase*> CurrentBuffs,int Count)
 {
+	srand((unsigned)time(NULL)); 
 	//TODO: 根据目前难度等级返回buff
+	for(int i =0;i<Count;i++)
+	{
+		auto BuffClass = BuffClasses[rand()%(BuffClasses.Num())];
+		CurrentBuffs.Add(NewObject<UBdBuffBase>(BuffClass));
+	}
 }

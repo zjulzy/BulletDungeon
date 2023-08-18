@@ -14,9 +14,10 @@ UCLASS()
 class BULLETDUNGEON_API UBdWeaponAttributeSet : public UBdAttributeSetBase
 {
 	GENERATED_BODY()
+
 public:
 	UBdWeaponAttributeSet();
-	
+
 	UPROPERTY(BlueprintReadOnly, Category = "Ammo")
 	FGameplayAttributeData ReserveAmmo;
 	ATTRIBUTE_ACCESSORS(UBdWeaponAttributeSet, ReserveAmmo)
@@ -32,5 +33,8 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Ammo")
 	FGameplayAttributeData InventoryAmmo;
 	ATTRIBUTE_ACCESSORS(UBdWeaponAttributeSet, InventoryAmmo)
-	
+
+	UPROPERTY(BlueprintReadOnly, Category = "Ammo")
+	FGameplayAttributeData ShootSpeed;
+	ATTRIBUTE_ACCESSORS(UBdWeaponAttributeSet, ShootSpeed)
 };

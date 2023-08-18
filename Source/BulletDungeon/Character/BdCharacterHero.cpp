@@ -16,6 +16,7 @@ ABdCharacterHero::ABdCharacterHero()
 	InteractionComponent = CreateDefaultSubobject<UBdInteractionComponent>("InteractionComponent");
 	bActivateWeaponSwitch = false;
 	bActivateInventory = false;
+	bActivateBuffSelect = false;
 }
 
 void ABdCharacterHero::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -145,8 +146,11 @@ void ABdCharacterHero::Input_SwitchWeapon(const FInputActionValue& InputValue)
 
 void ABdCharacterHero::Input_WeaponList(const FInputActionValue& InputValue)
 {
-	bActivateWeaponSwitch = true;
-	WeaponSwitchUI->SetVisibility(ESlateVisibility::Visible);
+	if (!(bActivateBuffSelect || bActivateWeaponSwitch))
+	{
+		bActivateWeaponSwitch = true;
+		WeaponSwitchUI->SetVisibility(ESlateVisibility::Visible);
+	}
 }
 
 void ABdCharacterHero::Input_WeaponListReleased(const FInputActionValue& InputValue)
@@ -161,6 +165,18 @@ void ABdCharacterHero::Input_WeaponListReleased(const FInputActionValue& InputVa
 
 void ABdCharacterHero::Input_Inventory(const FInputActionValue& InputValue)
 {
+	if (!(bActivateBuffSelect || bActivateWeaponSwitch))
+	{
+		if (bActivateInventory)
+		{
+			InventoryUI->SetVisibility(ESlateVisibility::Hidden);
+		}
+		else
+		{
+			InventoryUI->SetVisibility(ESlateVisibility::Visible);
+		}
+		bActivateInventory = !bActivateInventory;
+	}
 }
 
 FVector ABdCharacterHero::GetCameraLocation()
@@ -317,6 +333,24 @@ ABdAmmoBase* ABdCharacterHero::Primary_Attack()
 	return res;
 }
 
+void ABdCharacterHero::TestAddCritical(float Value)
+{
+	//控制台指令，增加相应数值的暴击率
+	CombatAttributes->SetCriticalRate(CombatAttributes->GetCriticalRate() + Value);
+}
+
+void ABdCharacterHero::TestAddAttack(float Value)
+{
+	//控制台指令，增加相应数值的攻击率
+	CombatAttributes->SetCriticalRate(CombatAttributes->GetCriticalRate() + Value);
+}
+
+void ABdCharacterHero::TestAddHealth(float Value)
+{
+	//控制台指令，增加相应数值的生命值
+	CombatAttributes->SetCriticalRate(HealthAttributes->GetHealth() + Value);
+}
+
 void ABdCharacterHero::TestAbilityInputTriggeredHandle()
 {
 	UKismetSystemLibrary::PrintString(this,TEXT("激活测试能力"));
@@ -408,9 +442,33 @@ void ABdCharacterHero::InitializeWeaponUI()
 	}
 }
 
+void ABdCharacterHero::InitializeInventoryUI()
+{
+	ABdPlayerController* PC = Cast<ABdPlayerController>(GetController());
+	if (InventoryUIClass)
+	{
+		InventoryUI = CreateWidget<UBdInventoryUI>(PC, InventoryUIClass);
+
+		if (InventoryUI)
+		{
+			InventoryUI->OwningCharacter = this;
+			InventoryUI->SetUpListen();
+
+			InventoryUI->SetVisibility(ESlateVisibility::Hidden);
+			InventoryUI->AddToViewport(0);
+		}
+	}
+}
+
+void ABdCharacterHero::InitializeUI()
+{
+	this->InitializeWeaponUI();
+	this->InitializeInventoryUI();
+}
+
 void ABdCharacterHero::BeginPlay()
 {
 	Super::BeginPlay();
 	InitializeAttributes();
-	InitializeWeaponUI();
+	InitializeUI();
 }

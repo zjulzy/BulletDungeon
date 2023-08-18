@@ -17,6 +17,7 @@
 #include "BulletDungeon/Equipments/Weapon/BdWeaponBase.h"
 #include "BulletDungeon/Player/BdPlayerController.h"
 #include "BulletDungeon/Player/BdPlayerState.h"
+#include "BulletDungeon/UI/BdInventoryUI.h"
 #include "BulletDungeon/UI/BdWeaponSwitchUI.h"
 #include "Camera/CameraComponent.h"
 #include "Components/SlateWrapperTypes.h"
@@ -61,7 +62,7 @@ class BULLETDUNGEON_API ABdCharacterHero : public ABdCharacterBase
 	FOnChangeReloadState OnChangeReloadState;
 
 	// 处理input 相关函数 -----------------------------------------------------------------------------------------------------------
-#pragma region 	
+#pragma region 	input
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	
 	UFUNCTION()
@@ -131,7 +132,15 @@ class BULLETDUNGEON_API ABdCharacterHero : public ABdCharacterBase
 
 	UPROPERTY(BlueprintReadWrite)
 	FTimerHandle TH_Shoot;
-	
+
+	UFUNCTION(Exec,BlueprintCallable)
+	void TestAddCritical(float Value);
+
+	UFUNCTION(Exec,BlueprintCallable)
+	void TestAddAttack(float Value);
+
+	UFUNCTION(Exec,BlueprintCallable)
+	void TestAddHealth(float Value);
 protected:	
 	// Ability input handle ----------------------------------------------------------------------------------------------------
 	void TestAbilityInputTriggeredHandle();
@@ -162,47 +171,47 @@ protected:
 	// input 相关property ---------------------------------------------------------------------------------------------------------------
 
 #pragma region 	
-	UPROPERTY(EditAnywhere,Category="输入")
+	UPROPERTY(EditAnywhere,Category="BulletDungeon|输入")
 	class UInputAction* IA_Move;
 	
-	UPROPERTY(EditAnywhere,Category="输入")
+	UPROPERTY(EditAnywhere,Category="BulletDungeon|输入")
 	class UInputAction* IA_Lookup;
 
-	UPROPERTY(EditAnywhere,Category="输入")
+	UPROPERTY(EditAnywhere,Category="BulletDungeon|输入")
 	class UInputAction* IA_Jump;
 
-	UPROPERTY(EditAnywhere,Category="输入")
+	UPROPERTY(EditAnywhere,Category="BulletDungeon|输入")
 	class UInputAction* IA_Attack;
 
-	UPROPERTY(EditAnywhere,Category="输入")
+	UPROPERTY(EditAnywhere,Category="BulletDungeon|输入")
 	class UInputAction* IA_Interact;
 
-	UPROPERTY(EditAnywhere,Category="输入")
+	UPROPERTY(EditAnywhere,Category="BulletDungeon|输入")
 	class UInputAction* IA_Aim;
 
-	UPROPERTY(EditAnywhere,Category="输入")
+	UPROPERTY(EditAnywhere,Category="BulletDungeon|输入")
 	UInputAction* IA_Weapons;
 
-	UPROPERTY(EditAnywhere,Category="输入")
+	UPROPERTY(EditAnywhere,Category="BulletDungeon|输入")
 	UInputAction* IA_SwitchWeapon;
 
-	UPROPERTY(EditAnywhere,Category="输入")
+	UPROPERTY(EditAnywhere,Category="BulletDungeon|输入")
 	UInputAction* IA_Inventory;
 	
-	UPROPERTY(EditAnywhere,Category="输入")
+	UPROPERTY(EditAnywhere,Category="BulletDungeon|输入")
 	UInputAction* IA_AbilityTest;
 	
-	UPROPERTY(EditAnywhere,Category="输入")
+	UPROPERTY(EditAnywhere,Category="BulletDungeon|输入")
 	UInputMappingContext* InputContext;
 	
-	UPROPERTY(EditAnywhere,Category="输入")
+	UPROPERTY(EditAnywhere,Category="BulletDungeon|输入")
 	UInputAction* IA_Reload;
 #pragma endregion 
 	// Ability 相关 property--------------------------------------------------------------------------------------------------------------------
-	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Outpost|Ability")
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="BulletDungeon|Ability")
 	TArray<TSubclassOf<UBdGameplayAbility>> StartupAbilities;
 
-	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Outpost|Ability")
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="BulletDungeon|Ability")
 	TSubclassOf<UBdGameplayAbility> TestStartupAbility;
 
 	// Weapon 相关 property---------------------------------------------------------------------------------------------------------------------------
@@ -226,19 +235,35 @@ protected:
 	UPROPERTY()
 	float AmmoRemain;
 	
-	bool bActivateWeaponSwitch;
 	
-	UPROPERTY(EditAnywhere,Category="Outpost|UI")
+	// UI以及背包相关---------------------------------------------------------------------------------------------------
+	// 几个bool值，记录武器切换，背包界面和buff选择界面是否激活
+	// 这几个UI界面是互斥的
+	bool bActivateInventory;
+	bool bActivateWeaponSwitch;
+	bool bActivateBuffSelect;
+
+	UPROPERTY(BlueprintReadOnly,EditAnywhere,Category="BulletDungeon|UI")
+	TSubclassOf<UBdInventoryUI> InventoryUIClass;
+
+	UPROPERTY(EditAnywhere,Category="BulletDungeon|UI")
 	TSubclassOf<UBdWeaponSwitchUI> WeaponSwitchUIClass;
 
 	UPROPERTY(BlueprintReadOnly)
 	UBdWeaponSwitchUI* WeaponSwitchUI;
 
+	UPROPERTY(BlueprintReadOnly)
+	UBdInventoryUI* InventoryUI;
+
 	UFUNCTION(BlueprintCallable)
 	void InitializeWeaponUI();
+
+	UFUNCTION(BlueprintCallable)
+	void InitializeInventoryUI();
+
+	UFUNCTION(BlueprintCallable)
+	void InitializeUI();
 	
-	// 背包相关---------------------------------------------------------------------------------------------------
-	bool bActivateInventory;
 public:
 	
 	virtual void BeginPlay() override;

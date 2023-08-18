@@ -12,6 +12,7 @@
 #include "Player/BdPlayerController.h"
 #include "Player/BdPlayerState.h"
 #include "Character/AI/BdCharacterAI.h"
+#include "UI/BdBuffSelectUI.h"
 #include "BulletDungeonGameModeBase.generated.h"
 
 /**
@@ -48,7 +49,7 @@ public:
 	void LevelFinished();
 
 	UFUNCTION(BlueprintCallable)
-	void GetPassBuff(TArray<UBdBuffBase*> CurrentBuffs);
+	void GetPassBuff(TArray<UBdBuffBase*> CurrentBuffs, int Count);
 protected:
 	UPROPERTY(EditAnywhere)
 	int MaxLevel;
@@ -64,11 +65,17 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite)
 	FVector CurrentLevelLocation;
+	
 	int LevelID;
 
 	UPROPERTY(BlueprintReadWrite,EditAnywhere)
 	int Difficulty;
 
-	
+	UPROPERTY(BlueprintReadOnly,EditAnywhere,Category="BulletDungeon")
+	TArray<TSubclassOf<UBdBuffBase>> BuffClasses;
+
+	// 通过单个关卡之后的buff选择UI类
+	UPROPERTY(BlueprintReadOnly,EditAnywhere,Category="BulletDungeon")
+	TSubclassOf<UBdBuffSelectUI> BuffSelectUIClass;
 	
 };

@@ -3,6 +3,7 @@
 
 #include "BdGEDemageExecutionCalc.h"
 
+#include <random>
 #include "BulletDungeon/AbilitySystem/Attributes/BdCombatAttributeSet.h"
 #include "BulletDungeon/AbilitySystem/Attributes/BdHealthAttributeSet.h"
 #include "BulletDungeon/AbilitySystem/Attributes/BdWeaponAttributeSet.h"
@@ -14,6 +15,8 @@ struct FBdDamageStatics
 	DECLARE_ATTRIBUTE_CAPTUREDEF(AmmoDamage);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(AttackMulti);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Health);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalRate);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalDamageRate);
 
 	FBdDamageStatics()
 	{
@@ -23,9 +26,9 @@ struct FBdDamageStatics
 
 		// Capture optional Damage set on the damage GE as a CalculationModifier under the ExecutionCalculation
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UBdWeaponAttributeSet, AmmoDamage, Source, true);
-
-
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UBdCombatAttributeSet, AttackMulti, Source, true);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UBdCombatAttributeSet, CriticalRate, Source, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UBdCombatAttributeSet, CriticalDamageRate, Source, false);
 		// Capture the Target's Health. Don't snapshot.
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UBdHealthAttributeSet, Health, Target, false);
 	}
@@ -42,6 +45,8 @@ UBdGEDemageExecutionCalc::UBdGEDemageExecutionCalc()
 	RelevantAttributesToCapture.Add(DamageStatics().AmmoDamageDef);
 	RelevantAttributesToCapture.Add(DamageStatics().AttackMultiDef);
 	RelevantAttributesToCapture.Add(DamageStatics().HealthDef);
+	RelevantAttributesToCapture.Add(DamageStatics().CriticalRateDef);
+	RelevantAttributesToCapture.Add(DamageStatics().CriticalDamageRateDef);
 }
 
 void UBdGEDemageExecutionCalc::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
@@ -80,7 +85,25 @@ void UBdGEDemageExecutionCalc::Execute_Implementation(const FGameplayEffectCusto
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().HealthDef, EvaluationParameters, Health);
 	Health = FMath::Max<float>(Health, 0.0f);
 
-	float HitDamage = AmmoDamage * AttackMulti;
+	float CriticalRate = 0.0f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().CriticalRateDef, EvaluationParameters,
+	                                                           CriticalRate);
+
+	float CriticalDamageRate = 0.0f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().CriticalDamageRateDef,
+	                                                           EvaluationParameters, CriticalDamageRate);
+
+
+	// 基于子弹伤害，暴击率，暴击伤害和额外伤害率计算总体伤害
+	// 伤害 = 子弹伤害 * (1 + 暴击伤害) * (1 + 额外伤害率)
+	std::uniform_real_distribution<double> u(0, 1);
+	std::default_random_engine e(time(NULL));
+	double Random = u(e);
+	float HitDamage = AmmoDamage * (1+AttackMulti);
+	if(Random<CriticalRate)
+	{
+		HitDamage*= (1+CriticalDamageRate);
+	}
 
 	if (HitDamage > 0)
 	{

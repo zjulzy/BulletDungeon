@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AttributeSet.h"
+#include "AbilitySystemComponent.h"
 #include "Kismet/BlueprintAsyncActionBase.h"
 #include "BdAsyncTaskAttributeChanged.generated.h"
 
