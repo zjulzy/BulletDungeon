@@ -13,12 +13,18 @@ UBdInventoryComponent::UBdInventoryComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 	WeaponCapacity = 6;
+	ItemCapacity = 24;
+	StackCapacity = 99;
+	
+	// 为每个格子初始化
+	
+	// InventoryItems.Init(FInventoryItem(EEquipmentEnum::Default,0), 24);
 	// ...
 }
 
 bool UBdInventoryComponent::AddWeapon(ABdWeaponBase* NewWeapon)
 {
-	if(Weapons.Num()>=WeaponCapacity)
+	if (Weapons.Num() >= WeaponCapacity)
 	{
 		return false;
 	}
@@ -31,9 +37,9 @@ bool UBdInventoryComponent::AddWeapon(ABdWeaponBase* NewWeapon)
 
 bool UBdInventoryComponent::QueryWeapon(ABdWeaponBase* NewWeapon)
 {
-	for(int i=0;i<Weapons.Num();i++)
+	for (int i = 0; i < Weapons.Num(); i++)
 	{
-		if(NewWeapon->WeaponType==Weapons[i]->WeaponType)
+		if (NewWeapon->WeaponType == Weapons[i]->WeaponType)
 		{
 			return false;
 		}
@@ -46,6 +52,21 @@ TArray<ABdWeaponBase*> UBdInventoryComponent::GetWeaponList()
 	return Weapons;
 }
 
+void UBdInventoryComponent::Reorganize()
+{
+}
+
+bool UBdInventoryComponent::AddItem(TSubclassOf<ABdEquipment> ItemClass, int Num)
+{
+	if(InventoryItems.Num()==ItemCapacity)
+	{
+		return false;
+	}
+	InventoryItems.Add(FInventoryItem(ItemClass,Num));
+	OnUpdateInventoryUI.Broadcast(InventoryItems);
+	return true;
+}
+
 
 // Called when the game starts
 void UBdInventoryComponent::BeginPlay()
@@ -53,15 +74,14 @@ void UBdInventoryComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
 }
 
 
 // Called every frame
-void UBdInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UBdInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType,
+                                          FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
 }
-

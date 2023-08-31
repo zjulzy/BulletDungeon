@@ -3,6 +3,7 @@
 
 #include "BdInventoryUI.h"
 
+#include "Blueprint/WidgetTree.h"
 #include "BulletDungeon/AbilitySystem/BdAsyncTaskAttributeChanged.h"
 #include "BulletDungeon/Character/BdCharacterHero.h"
 
@@ -26,7 +27,28 @@ void UBdInventoryUI::SetUpListen_Implementation()
 	};
 	auto Task = UBdAsyncTaskAttributeChanged::ListenForAttributesChange(ASC, Attributes);
 	Task->OnAttributeChanged.AddDynamic(this, &UBdInventoryUI::UpdateAttributes);
+	auto Owner = Cast<ABdCharacterHero>(OwningCharacter);
+	auto IC = Cast<UBdInventoryComponent>(Owner->GetInventoryComponent());
+	IC->OnUpdateInventoryUI.AddDynamic(this, &UBdInventoryUI::UpdateItems);
 }
+
+void UBdInventoryUI::NativeConstruct()
+{
+	Super::NativeConstruct();
+	// 获取所有子控件
+	auto Panel = WidgetTree->FindWidget<UWidget>(TEXT("GridPanel"));
+	TArray<UWidget*> ItemWidgets;
+	WidgetTree->GetChildWidgets(Panel, ItemWidgets);
+	for (int i = 0; i < ItemWidgets.Num(); i++)
+	{
+		Items.Add(Cast<UBdInventoryItemUI>(ItemWidgets[i]));
+		Cast<UBdInventoryItemUI>(ItemWidgets[i])->Index = i;
+		Cast<UBdInventoryItemUI>(ItemWidgets[i])->OnSelectItem.AddUObject(this,&UBdInventoryUI::Selected);
+	}
+	SeletedIndex = -1;
+	InventoryComponent = Cast<UBdInventoryComponent>(Cast<ABdCharacterHero>(OwningCharacter)->GetInventoryComponent());
+}
+
 
 void UBdInventoryUI::UpdateAttributes(FGameplayAttribute Attribute, float NewValue, float OldValue)
 {
@@ -37,7 +59,6 @@ void UBdInventoryUI::UpdateAttributes(FGameplayAttribute Attribute, float NewVal
 	}
 	else if (Attribute == UBdCombatAttributeSet::GetAttackMultiAttribute())
 	{
-
 	}
 	else if (Attribute == UBdCombatAttributeSet::GetCriticalRateAttribute())
 	{
@@ -51,28 +72,33 @@ void UBdInventoryUI::UpdateAttributes(FGameplayAttribute Attribute, float NewVal
 	}
 	else if (Attribute == UBdCombatAttributeSet::GetDefenceAttribute())
 	{
-
 	}
 	else if (Attribute == UBdCombatAttributeSet::GetPenetrateAttribute())
 	{
-
 	}
 	else if (Attribute == UBdWeaponAttributeSet::GetShootSpeedAttribute())
 	{
 		UE_LOG(LogTemp, Log, TEXT("ShootSpeed changed from %f to %f"), OldValue, NewValue);
-		ShootSpeedText->SetText(FText::FromString(TEXT("射速：") + FString::SanitizeFloat(NewValue)));
+		ShootSpeedText->SetText(FText::FromString(TEXT("射速：") + FString::SanitizeFloat(1 / NewValue)));
 	}
 	else if (Attribute == UBdWeaponAttributeSet::GetReserveAmmoAttribute())
 	{
-
 	}
 	else if (Attribute == UBdWeaponAttributeSet::GetInventoryAmmoAttribute())
 	{
-
 	}
 	else if (Attribute == UBdWeaponAttributeSet::GetAmmoDamageAttribute())
 	{
 		UE_LOG(LogTemp, Log, TEXT("AmmoDamage changed from %f to %f"), OldValue, NewValue);
 		AttackText->SetText(FText::FromString(TEXT("攻击力：") + FString::SanitizeFloat(NewValue)));
+	}
+}
+
+void UBdInventoryUI::UpdateItems(TArray<FInventoryItem>& Its)
+{
+	// 基于传入list更新UI中的背包界面
+	for (int i = 0; i < Its.Num(); i++)
+	{
+		Items[i]->Activate(Its[i].ItemClass, Its[i].Num);
 	}
 }

@@ -34,7 +34,11 @@ void UBdInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	APlayerController* Controller = Cast<APlayerController>(Pawn->GetController());
 	FVector EyeLocation;
 	FRotator EyeRotation;
-	Pawn->GetActorEyesViewPoint(EyeLocation, EyeRotation);
+	// Pawn->GetActorEyesViewPoint(EyeLocation, EyeRotation);
+	//使用玩家视角进行射线检测
+	EyeLocation = Controller->PlayerCameraManager->GetCameraLocation();
+	EyeRotation = Controller->GetControlRotation();
+	
 	FVector Destination = EyeLocation + 1000 * EyeRotation.Vector();
 	// DrawDebugLine(GetWorld(),EyeLocation,Destination,FColor::Red,false,2.0f);
 	FHitResult HitResult;

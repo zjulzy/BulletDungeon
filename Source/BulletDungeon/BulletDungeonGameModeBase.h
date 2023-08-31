@@ -12,6 +12,7 @@
 #include "Player/BdPlayerController.h"
 #include "Player/BdPlayerState.h"
 #include "Character/AI/BdCharacterAI.h"
+#include "System/BdMapManageSystemComponent.h"
 #include "UI/BdBuffSelectUI.h"
 #include "BulletDungeonGameModeBase.generated.h"
 
@@ -19,29 +20,30 @@
  * 
  */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRefreshLevel);
+
 UCLASS()
 class BULLETDUNGEON_API ABulletDungeonGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
-public:
 
+public:
 	//在进入新的关卡之后通知UI等进行刷新
 	UPROPERTY(BlueprintCallable)
 	FRefreshLevel RefreshLevel;
-	
+
 	ABulletDungeonGameModeBase();
 	virtual void BeginPlay() override;
-	
-	
+
+
 	UFUNCTION(BlueprintCallable)
 	FVector GetNextLevelLocation();
 
-	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void LoadAndTravelNewLevel();
 
 	UFUNCTION(BlueprintCallable)
 	bool CanSpawnEnemy(TSubclassOf<ABdCharacterAI> EnemyClass);
-	
+
 	UFUNCTION(BlueprintCallable)
 	int GetDifficulty();
 
@@ -49,15 +51,25 @@ public:
 	void LevelFinished();
 
 	UFUNCTION(BlueprintCallable)
-	void GetPassBuff(TArray<UBdBuffBase*> CurrentBuffs, int Count);
+	void GetPassBuff(TArray<UBdBuffBase*>& CurrentBuffs, int Count);
+
+	UFUNCTION(Exec, BlueprintCallable)
+	void TestTravel(uint8 LevelIndex);
+
 protected:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	UBdMapManageSystemComponent* MapManageSystem;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int MaxLevel;
 
-	UPROPERTY(EditAnywhere)
-	TArray<FName>LevelNames;
+	UPROPERTY(BlueprintReadWrite)
+	bool bLastLevel;
 
-	UPROPERTY(EditAnywhere,Category="BulletDungeon")
+	UPROPERTY(EditAnywhere)
+	TArray<FName> LevelNames;
+
+	UPROPERTY(EditAnywhere, Category="BulletDungeon")
 	TSubclassOf<ABdTransport> TransportClass;
 
 	UPROPERTY(BlueprintReadWrite)
@@ -65,17 +77,16 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite)
 	FVector CurrentLevelLocation;
-	
+
 	int LevelID;
 
-	UPROPERTY(BlueprintReadWrite,EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int Difficulty;
 
-	UPROPERTY(BlueprintReadOnly,EditAnywhere,Category="BulletDungeon")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="BulletDungeon")
 	TArray<TSubclassOf<UBdBuffBase>> BuffClasses;
 
 	// 通过单个关卡之后的buff选择UI类
-	UPROPERTY(BlueprintReadOnly,EditAnywhere,Category="BulletDungeon")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="BulletDungeon")
 	TSubclassOf<UBdBuffSelectUI> BuffSelectUIClass;
-	
 };

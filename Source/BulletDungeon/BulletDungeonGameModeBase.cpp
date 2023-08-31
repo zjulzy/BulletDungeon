@@ -16,6 +16,8 @@ ABulletDungeonGameModeBase::ABulletDungeonGameModeBase()
 	CurrentLevelLocation = FVector(0, 0, 0);
 
 	LevelNames = {FName("L_StartLevel"), FName("L_DemoMap"), FName("L_NextMap")};
+	bLastLevel = false;
+	Difficulty = 1;
 }
 
 void ABulletDungeonGameModeBase::BeginPlay()
@@ -41,10 +43,16 @@ bool ABulletDungeonGameModeBase::CanSpawnEnemy(TSubclassOf<ABdCharacterAI> Enemy
 	ABdGameStateBase* GS = GetGameState<ABdGameStateBase>();
 	bool bIsConformDifficulty = GS->GetCurrentWeights() + EnemyClass.GetDefaultObject()->GetWeight() <= Difficulty;
 	bool bISConformLevel = true;
-	if (GetGameState<ABdGameStateBase>()->GetCurrentEnemies().Find(EnemyClass))
+	TMap<TSubclassOf<ABdCharacterAI>, int> Enemies;
+	TMap<TSubclassOf<UObject>, int> Goals;
+	GS->GetCurrentEnemies(Enemies);
+	GS->GetUnfinishedGoal(Goals);
+
+	if (Enemies.Find(EnemyClass))
 	{
-		bISConformLevel = GetGameState<ABdGameStateBase>()->GetCurrentEnemies()[EnemyClass] < GetGameState<
-			ABdGameStateBase>()->GetUnfinishedGoal()[EnemyClass];
+		int Current = Enemies[EnemyClass];
+		int Reserve = Goals[EnemyClass];
+		bISConformLevel = Current < Reserve;
 	}
 	else
 	{
@@ -60,28 +68,41 @@ int ABulletDungeonGameModeBase::GetDifficulty()
 
 void ABulletDungeonGameModeBase::LevelFinished()
 {
-	// 在关卡通过后的操作
-	FActorSpawnParameters SpawnParameters;
-	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-	SpawnParameters.Instigator = nullptr;
-	FRotator SpawnRotator = FRotator(0, 0, 0);
+	// 在关卡通过后的操作，如果是关底需要通往胜利界面
+	if(bLastLevel)
+	{
+		// 跳转到结算界面
+	}else
+	{
+		FActorSpawnParameters SpawnParameters;
+		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+		SpawnParameters.Instigator = nullptr;
+		FRotator SpawnRotator = FRotator(0, 0, 0);
 
-	GetWorld()->SpawnActor(TransportClass, &CurrentLevelLocation, &SpawnRotator, SpawnParameters);
+		GetWorld()->SpawnActor(TransportClass, &CurrentLevelLocation, &SpawnRotator, SpawnParameters);
 
-	// 为玩家生成buff选择界面
-	ABdPlayerController* PC = Cast<ABdPlayerController>(GetWorld()->GetFirstPlayerController());
-	UUserWidget* BuffSelectUI = CreateWidget<UUserWidget>(PC, BuffSelectUIClass);
-	BuffSelectUI->AddToViewport(1);
+		// 为玩家生成buff选择界面
+		ABdPlayerController* PC = Cast<ABdPlayerController>(GetWorld()->GetFirstPlayerController());
+		UUserWidget* BuffSelectUI = CreateWidget<UUserWidget>(PC, BuffSelectUIClass);
+		BuffSelectUI->AddToViewport(1);
+	}
+	
 }
 
+
 // buff选择界面调用，根据当前通过关卡难度，返回若干个buff
-void ABulletDungeonGameModeBase::GetPassBuff(TArray<UBdBuffBase*> CurrentBuffs,int Count)
+void ABulletDungeonGameModeBase::GetPassBuff(TArray<UBdBuffBase*>& CurrentBuffs, int Count)
 {
-	srand((unsigned)time(NULL)); 
+	srand((unsigned)time(NULL));
 	//TODO: 根据目前难度等级返回buff
-	for(int i =0;i<Count;i++)
+	for (int i = 0; i < Count; i++)
 	{
-		auto BuffClass = BuffClasses[rand()%(BuffClasses.Num())];
-		CurrentBuffs.Add(NewObject<UBdBuffBase>(BuffClass));
+		auto BuffClass = BuffClasses[rand() % (BuffClasses.Num())];
+		CurrentBuffs.Add(NewObject<UBdBuffBase>(this,BuffClass));
 	}
+}
+
+void ABulletDungeonGameModeBase::TestTravel(uint8 LevelIndex)
+{
+	// TODO:切换到指定关卡
 }

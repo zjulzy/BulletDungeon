@@ -64,6 +64,9 @@ void ABdCharacterHero::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		EnhancedInputComponent->BindAction(IA_Weapons, ETriggerEvent::Completed, this,
 		                                   &ABdCharacterHero::Input_WeaponListReleased);
 
+		EnhancedInputComponent->BindAction(IA_Inventory, ETriggerEvent::Started, this,
+		                                   &ABdCharacterHero::Input_Inventory);
+
 		EnhancedInputComponent->BindAction(IA_Aim, ETriggerEvent::Started, this, &ABdCharacterHero::Input_Aim);
 		EnhancedInputComponent->BindAction(IA_Aim, ETriggerEvent::Completed, this, &ABdCharacterHero::Input_UnAim);
 
@@ -118,7 +121,7 @@ void ABdCharacterHero::Input_Aim(const FInputActionValue& InputValue)
 		SpringArmComponent->TargetArmLength = 100;
 		bIsAiming = true;
 		bUseControllerRotationYaw = true;
-		SpringArmComponent->SetRelativeTransform(FTransform(FVector(0, 30, 50)));
+		SpringArmComponent->SetRelativeTransform(FTransform(FVector(0, 0, 60)));
 	}
 }
 
@@ -348,7 +351,13 @@ void ABdCharacterHero::TestAddAttack(float Value)
 void ABdCharacterHero::TestAddHealth(float Value)
 {
 	//控制台指令，增加相应数值的生命值
-	CombatAttributes->SetCriticalRate(HealthAttributes->GetHealth() + Value);
+	HealthAttributes->SetHealth(HealthAttributes->GetHealth() + Value);
+}
+
+void ABdCharacterHero::TestAddMaxHealth(float Value)
+{
+	//控制台指令，增加相应数值的最大生命值
+	CombatAttributes->SetCriticalRate(HealthAttributes->GetMaxHealth() + Value);
 }
 
 void ABdCharacterHero::TestAbilityInputTriggeredHandle()

@@ -4,17 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "BulletDungeon/Character/AI/BdCharacterAI.h"
 #include "BdSpawnPoint.generated.h"
 
 UCLASS()
 class BULLETDUNGEON_API ABdSpawnPoint : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	ABdSpawnPoint();
-	DECLARE_MULTICAST_DELEGATE_OneParam(FOnAddEnemyWeights,TSubclassOf<ABdCharacterAI>);
+	DECLARE_MULTICAST_DELEGATE_OneParam(FOnAddEnemyWeights, TSubclassOf<ABdCharacterAI>);
 	FOnAddEnemyWeights OnAddEnemyWeights;
 
 protected:
@@ -31,8 +32,7 @@ protected:
 
 	float SpawnInterval;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
 };

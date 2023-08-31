@@ -26,6 +26,7 @@ void ABdWeaponBase::AddWeaponAbilities()
 
 void ABdWeaponBase::RemoveWeaponAbilities()
 {
+	
 }
 
 TSubclassOf<ABdAmmoBase> ABdWeaponBase::GetAmmoClass()

@@ -17,6 +17,8 @@ public class BulletDungeon : ModuleRules
 			"CoreUObject",
 			"Engine",
 			"InputCore",
+			"Niagara",
+			"NiagaraCore",
 			"EnhancedInput",
 			"Paper2D"
 			

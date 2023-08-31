@@ -45,10 +45,10 @@ public:
 	FOnFinishGoal OnFinishGoal;
 	
 	ABdGameStateBase();
-	TSubclassOf<ABdCharacterBase> EnemyBaseClass;
+	TSubclassOf<ABdCharacterAI> EnemyBaseClass;
 
 	UFUNCTION(BlueprintCallable)
-	TMap<TSubclassOf<UObject>, int> GetUnfinishedGoal();
+	void GetUnfinishedGoal(TMap<TSubclassOf<UObject>, int>& result);
 
 	UFUNCTION(BlueprintCallable)
 	void ResetGoal(FName LevelName);
@@ -62,7 +62,7 @@ public:
 	FonFinishedLevelGoal OnFinishedLevelGoal;
 
 	UFUNCTION(BlueprintCallable)
-	TMap<TSubclassOf<ABdCharacterAI>, int> GetCurrentEnemies();
+	void GetCurrentEnemies(TMap<TSubclassOf<ABdCharacterAI>, int>& result);
 
 	UFUNCTION(BlueprintCallable)
 	void OnReduceEnemy(TSubclassOf<ABdCharacterAI> EnemyClass);
@@ -82,6 +82,5 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite)
 	TMap<TSubclassOf<UObject>, int> UnfinishedGoal;
-
-	int Difficulty;
+	
 };

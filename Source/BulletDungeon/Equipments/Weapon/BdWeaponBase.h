@@ -37,6 +37,9 @@ public:
 	UPROPERTY()
 	float AmmoSpeed;
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="射击")
+	UMaterial* LiveMaterial;
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="射击")
 	float Ammos;
 

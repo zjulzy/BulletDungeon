@@ -4,6 +4,7 @@
 #include "BdStartUpGameModeBase.h"
 
 #include "Blueprint/UserWidget.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 void ABdStartUpGameModeBase::PostLogin(APlayerController* NewPlayer)
@@ -26,5 +27,8 @@ void ABdStartUpGameModeBase::InitializeStartUpUI(APlayerController* NewPlayer)
 
 		StartUpUI = CreateWidget<UUserWidget>(NewPlayer, StartUpUIClass);
 		StartUpUI->AddToViewport();
+		auto PC = UGameplayStatics::GetPlayerController(this,0);
+		PC->bShowMouseCursor = true;
+		
 	}
 }

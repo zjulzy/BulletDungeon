@@ -6,6 +6,7 @@
 
 ABdHealer::ABdHealer()
 {
+	Type = EEquipmentEnum::Heal;
 }
 
 void ABdHealer::Use_Implementation()

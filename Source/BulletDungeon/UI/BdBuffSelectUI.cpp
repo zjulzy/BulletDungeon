@@ -25,20 +25,31 @@ void UBdBuffSelectUI::BuffSelected()
 
 void UBdBuffSelectUI::Activate()
 {
-	UGameplayStatics::SetGamePaused(this,true);
+	UGameplayStatics::SetGamePaused(this, true);
 	GetCandidates();
 	SelectedID = -1;
+	
+	// 启用鼠标以及相关点击和悬浮事件
+	ABdPlayerController* PC = Cast<ABdPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
+	PC->bShowMouseCursor = true;
+	PC->bEnableMouseOverEvents = true;
+	PC->bEnableClickEvents = true;
 }
 
 void UBdBuffSelectUI::BuffConfirmed()
 {
-	if(SelectedID>=0)
+	if (SelectedID >= 0)
 	{
-		UGameplayStatics::SetGamePaused(this,false);
+		UGameplayStatics::SetGamePaused(this, false);
 		Candidates[SelectedID]->ActivateBuff();
+		
+		// 隐藏鼠标
+		ABdPlayerController* PC = Cast<ABdPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
+		PC->bShowMouseCursor = false;
+		PC->bEnableMouseOverEvents = false;
+		PC->bEnableClickEvents = false;
+		
 		this->RemoveFromParent();
 		this->Destruct();
 	}
-	
-	
 }

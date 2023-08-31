@@ -141,6 +141,10 @@ class BULLETDUNGEON_API ABdCharacterHero : public ABdCharacterBase
 
 	UFUNCTION(Exec,BlueprintCallable)
 	void TestAddHealth(float Value);
+
+	UFUNCTION(Exec,BlueprintCallable)
+	void TestAddMaxHealth(float Value);
+	
 protected:	
 	// Ability input handle ----------------------------------------------------------------------------------------------------
 	void TestAbilityInputTriggeredHandle();

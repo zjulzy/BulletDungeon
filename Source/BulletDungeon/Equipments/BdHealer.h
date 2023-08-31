@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "BdEquipment.h"
+#include "GameplayEffect.h"
 #include "BdHealer.generated.h"
 
 /**
@@ -18,7 +19,9 @@ public:
 	ABdHealer();
 
 	virtual void Use_Implementation() override;
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float HealAmount;
+	TArray<TSubclassOf<UGameplayEffect>> UseEffect;
+	
 };

@@ -11,7 +11,13 @@ ABdEquipment::ABdEquipment()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	SkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>("MeshComponent");
+	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("StaticMeshComponent");
+	NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>("NiagaraComponent");
+	
 	RootComponent = SkeletalMeshComponent;
+	StaticMeshComponent->SetupAttachment(RootComponent);
+	NiagaraComponent->SetupAttachment(RootComponent);
+	Type = EEquipmentEnum::Default;
 }
 
 bool ABdEquipment::CanBeInteracted_Implementation()
