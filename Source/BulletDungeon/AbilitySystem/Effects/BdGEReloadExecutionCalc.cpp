@@ -4,6 +4,7 @@
 #include "BdGEReloadExecutionCalc.h"
 
 #include "BulletDungeon/AbilitySystem/Attributes/BdWeaponAttributeSet.h"
+#include "BulletDungeon/Character/BdCharacterHero.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 struct FBdReloadStatics
@@ -80,19 +81,26 @@ void UBdGEReloadExecutionCalc::Execute_Implementation(const FGameplayEffectCusto
 	InventoryAmmo = FMath::Max<float>(InventoryAmmo, 0.0f);
 
 	float Cost = MaxAmmo - ReserveAmmo;
+	float res = 0;
 	UKismetSystemLibrary::PrintString(this, FString::FromInt(static_cast<int>(MaxAmmo)));
 	float NewReserveAmmo, NewInventoryAmmo;
 	if (Cost > InventoryAmmo)
 	{
 		NewReserveAmmo = ReserveAmmo + InventoryAmmo;
 		NewInventoryAmmo = 0;
+		res = InventoryAmmo;
 	}
 	else
 	{
 		NewReserveAmmo = MaxAmmo;
 		NewInventoryAmmo = InventoryAmmo - Cost;
+		res = Cost;
 	}
 
+	// TODO: 去背包中找子弹进行消耗
+	auto PlayerPawn = SourceAbilitySystemComponent->GetAvatarActor();
+	auto InventoryComponent = Cast<UBdInventoryComponent>(Cast<ABdCharacterHero>(PlayerPawn)->GetInventoryComponent());
+	InventoryComponent->ConsumeAmmo(res);
 	OutExecutionOutput.AddOutputModifier(
 		FGameplayModifierEvaluatedData(ReloadStatics().ReserveAmmoProperty, EGameplayModOp::Override, NewReserveAmmo));
 	OutExecutionOutput.AddOutputModifier(

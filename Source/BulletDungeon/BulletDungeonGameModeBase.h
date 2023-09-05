@@ -33,8 +33,7 @@ public:
 
 	ABulletDungeonGameModeBase();
 	virtual void BeginPlay() override;
-
-
+	
 	UFUNCTION(BlueprintCallable)
 	FVector GetNextLevelLocation();
 

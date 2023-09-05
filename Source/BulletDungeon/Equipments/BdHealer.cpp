@@ -9,7 +9,7 @@ ABdHealer::ABdHealer()
 	Type = EEquipmentEnum::Heal;
 }
 
-void ABdHealer::Use_Implementation()
+void ABdHealer::Use_Implementation(APawn* Target)
 {
-	Super::Use_Implementation();
+	Super::Use_Implementation(Target);
 }

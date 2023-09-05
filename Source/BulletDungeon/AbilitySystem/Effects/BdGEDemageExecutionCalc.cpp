@@ -17,6 +17,7 @@ struct FBdDamageStatics
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Health);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalRate);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalDamageRate);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(DamageValueCache);
 
 	FBdDamageStatics()
 	{
@@ -29,6 +30,7 @@ struct FBdDamageStatics
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UBdCombatAttributeSet, AttackMulti, Source, true);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UBdCombatAttributeSet, CriticalRate, Source, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UBdCombatAttributeSet, CriticalDamageRate, Source, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UBdCombatAttributeSet, DamageValueCache, Source, false);
 		// Capture the Target's Health. Don't snapshot.
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UBdHealthAttributeSet, Health, Target, false);
 	}
@@ -47,6 +49,7 @@ UBdGEDemageExecutionCalc::UBdGEDemageExecutionCalc()
 	RelevantAttributesToCapture.Add(DamageStatics().HealthDef);
 	RelevantAttributesToCapture.Add(DamageStatics().CriticalRateDef);
 	RelevantAttributesToCapture.Add(DamageStatics().CriticalDamageRateDef);
+	RelevantAttributesToCapture.Add(DamageStatics().DamageValueCacheDef);
 }
 
 void UBdGEDemageExecutionCalc::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
@@ -99,10 +102,10 @@ void UBdGEDemageExecutionCalc::Execute_Implementation(const FGameplayEffectCusto
 	std::uniform_real_distribution<double> u(0, 1);
 	std::default_random_engine e(time(NULL));
 	double Random = u(e);
-	float HitDamage = AmmoDamage * (1+AttackMulti);
-	if(Random<CriticalRate)
+	float HitDamage = AmmoDamage * (1 + AttackMulti);
+	if (Random < CriticalRate)
 	{
-		HitDamage*= (1+CriticalDamageRate);
+		HitDamage *= (1 + CriticalDamageRate);
 	}
 
 	if (HitDamage > 0)
@@ -112,5 +115,8 @@ void UBdGEDemageExecutionCalc::Execute_Implementation(const FGameplayEffectCusto
 		// Set the Target's damage meta attribute
 		OutExecutionOutput.AddOutputModifier(
 			FGameplayModifierEvaluatedData(DamageStatics().HealthProperty, EGameplayModOp::Additive, HitDamage * -1));
+		OutExecutionOutput.AddOutputModifier(
+			FGameplayModifierEvaluatedData(DamageStatics().DamageValueCacheProperty, EGameplayModOp::Override,
+			                               HitDamage));
 	}
 }

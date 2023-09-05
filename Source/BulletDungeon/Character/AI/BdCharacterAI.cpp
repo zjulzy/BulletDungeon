@@ -43,6 +43,7 @@ ABdCharacterAI::ABdCharacterAI()
 		OnKilledEnemy.AddUObject(Cast<ABulletDungeonGameModeBase>(GM)->GetGameState<ABdGameStateBase>(),&ABdGameStateBase::OnEnemyKilled);
 		OnKilledEnemy.AddUObject(Cast<ABulletDungeonGameModeBase>(GM)->GetGameState<ABdGameStateBase>(),&ABdGameStateBase::OnReduceEnemy);
 	}
+	weight = 0;
 }
 
 UAbilitySystemComponent* ABdCharacterAI::GetAbilitySystemComponent()

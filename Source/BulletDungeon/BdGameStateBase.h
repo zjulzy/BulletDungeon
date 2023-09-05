@@ -26,6 +26,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "BulletDungeon")
 	int32 EnemyBaseNum;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "BulletDungeon")
+	int32 EnemySkeletonNum;
+
 	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Outpost|LevelGoal")
 	// FName Name;
 	//
@@ -46,6 +49,7 @@ public:
 	
 	ABdGameStateBase();
 	TSubclassOf<ABdCharacterAI> EnemyBaseClass;
+	TSubclassOf<ABdCharacterAI> EnemySkeletonClass;
 
 	UFUNCTION(BlueprintCallable)
 	void GetUnfinishedGoal(TMap<TSubclassOf<UObject>, int>& result);

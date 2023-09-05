@@ -3,6 +3,8 @@
 
 #include "BdCharacterHero.h"
 
+#include "Kismet/GameplayStatics.h"
+
 
 ABdCharacterHero::ABdCharacterHero()
 {
@@ -78,6 +80,8 @@ void ABdCharacterHero::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		                                   &ABdCharacterHero::Input_SwitchWeapon);
 		// EnhancedInputComponent->BindAction(IA_Reload, ETriggerEvent::Started, this, &ABdCharacterHero::Input_Reload);
 
+		EnhancedInputComponent->BindAction(IA_Menu, ETriggerEvent::Started, this, &ABdCharacterHero::Input_Menu);
+
 		EnhancedInputComponent->BindAction(IA_AbilityTest, ETriggerEvent::Started, this,
 		                                   &ABdCharacterHero::TestAbilityInputTriggeredHandle);
 		EnhancedInputComponent->BindAction(IA_AbilityTest, ETriggerEvent::Completed, this,
@@ -99,6 +103,7 @@ void ABdCharacterHero::Input_Move(const FInputActionValue& InputValue)
 
 void ABdCharacterHero::input_Lookup(const FInputActionValue& InputValue)
 {
+	if (bActivateMenu || bActivateInventory || bActivateBuffSelect || bActivateWeaponSwitch)return;
 	APlayerController* controller = Cast<APlayerController>(GetController());
 	const FVector2d Value = InputValue.Get<FVector2d>();
 	controller->AddYawInput(Value.X);
@@ -172,13 +177,36 @@ void ABdCharacterHero::Input_Inventory(const FInputActionValue& InputValue)
 	{
 		if (bActivateInventory)
 		{
-			InventoryUI->SetVisibility(ESlateVisibility::Hidden);
+			InventoryUI->Deactivate();
 		}
 		else
 		{
-			InventoryUI->SetVisibility(ESlateVisibility::Visible);
+			InventoryUI->Activate();
 		}
 		bActivateInventory = !bActivateInventory;
+	}
+}
+
+void ABdCharacterHero::Input_Menu(const FInputActionValue& InputValue)
+{
+	if (bActivateInventory)
+	{
+		InventoryUI->Deactivate();
+		bActivateInventory = false;
+	}
+	else if (bActivateMenu)
+	{
+		MenuUI->Deactivate();
+		bActivateMenu = false;
+	}
+	else if (bActivateBuffSelect)
+	{
+		return;
+	}
+	else if (!bActivateMenu)
+	{
+		bActivateMenu = true;
+		MenuUI->Activate();
 	}
 }
 
@@ -469,10 +497,27 @@ void ABdCharacterHero::InitializeInventoryUI()
 	}
 }
 
+void ABdCharacterHero::InitializeMenuUI()
+{
+	ABdPlayerController* PC = Cast<ABdPlayerController>(GetController());
+	if (MenuUIClass)
+	{
+		MenuUI = CreateWidget<UBdMenuUI>(PC, MenuUIClass);
+
+		if (MenuUI)
+		{
+			MenuUI->OwningCharacter = this;
+			MenuUI->SetVisibility(ESlateVisibility::Hidden);
+			MenuUI->AddToViewport(0);
+		}
+	}
+}
+
 void ABdCharacterHero::InitializeUI()
 {
 	this->InitializeWeaponUI();
 	this->InitializeInventoryUI();
+	this->InitializeMenuUI();
 }
 
 void ABdCharacterHero::BeginPlay()

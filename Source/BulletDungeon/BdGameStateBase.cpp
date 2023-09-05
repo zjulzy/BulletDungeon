@@ -15,6 +15,9 @@ ABdGameStateBase::ABdGameStateBase()
 	// 初始化所有敌人的class
 	EnemyBaseClass = ConstructorHelpers::FClassFinder<ABdCharacterAI>(
 		TEXT("/Script/Engine.Blueprint'/Game/Characters/AI/BP_DemoEnemy.BP_DemoEnemy_C'")).Class;
+	EnemySkeletonClass = ConstructorHelpers::FClassFinder<ABdCharacterAI>(
+
+		TEXT("/Script/Engine.Blueprint'/Game/Characters/AI/BP_SkeletonEnemy.BP_SkeletonEnemy_c'")).Class;
 	OnFinishGoal.AddDynamic(this, &ABdGameStateBase::FinishGoal);
 }
 
@@ -45,6 +48,13 @@ void ABdGameStateBase::ResetGoal(FName LevelName)
 				if (EnemyBaseClass.GetDefaultObject()->GetWeight() <= Difficulty)
 				{
 					UnfinishedGoal.Add(EnemyBaseClass, Row->EnemyBaseNum * Difficulty);
+				}
+			}
+			if (Row->EnemySkeletonNum > 0)
+			{
+				if (EnemySkeletonClass.GetDefaultObject()->GetWeight() <= Difficulty)
+				{
+					UnfinishedGoal.Add(EnemySkeletonClass, Row->EnemySkeletonNum * Difficulty);
 				}
 			}
 		}

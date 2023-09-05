@@ -23,7 +23,7 @@ public:
 		Num = 0;
 	}
 
-	FInventoryItem(TSubclassOf<ABdEquipment> c,int n): ItemClass(c), Num(n)
+	FInventoryItem(TSubclassOf<ABdEquipment> c, int n): ItemClass(c), Num(n)
 	{
 		Type = ItemClass.GetDefaultObject()->Type;
 	}
@@ -64,6 +64,15 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	bool AddItem(TSubclassOf<ABdEquipment> ItemClass, int Num);
+
+	UFUNCTION()
+	TArray<FInventoryItem> GetInventoryItems();
+
+	UFUNCTION(BlueprintCallable)
+	bool UseInventoryItem(int Index, int Num);
+
+	UFUNCTION(BlueprintCallable)
+	void ConsumeAmmo( int Num);
 
 protected:
 	// Called when the game starts

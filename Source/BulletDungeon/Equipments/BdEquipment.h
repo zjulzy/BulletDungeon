@@ -6,6 +6,8 @@
 #include "NiagaraComponent.h"
 #include "BdInteractionInterface.h"
 #include "GameFramework/Actor.h"
+#include "AbilitySystemComponent.h"
+#include "GameplayEffect.h"
 #include "BdEquipment.generated.h"
 
 UENUM(BlueprintType)
@@ -13,7 +15,7 @@ enum class EEquipmentEnum:uint8
 {
 	Default,
 	Heal,
-	Ammo,
+	RifleAmmo,
 	Weapon
 };
 
@@ -27,6 +29,9 @@ public:
 	ABdEquipment();
 	UPROPERTY(BlueprintReadOnly)
 	AActor* SpawnPoint;
+
+	UPROPERTY(EditAnywhere)
+	FText Description;
 
 	UPROPERTY(BlueprintReadWrite)
 	EEquipmentEnum Type;
@@ -55,18 +60,32 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UNiagaraComponent* NiagaraComponent;
 
+	UFUNCTION(BlueprintCallable)
+	void InteractionEffectApply(APawn* Target);
 
 	UPROPERTY(BlueprintReadWrite)
 	APawn* Equiper;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int BaseNum;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TMap<TSubclassOf<UGameplayEffect>, int> InteractionEffect;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<TSubclassOf<UGameplayEffect>, int> UseEffect;
+
+public:
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	bool bCanBeUsed;
+	
+	UFUNCTION(BlueprintCallable)
+	void Interacted_Implementation(APawn* InstigatorPawn) override;
 
 	// 装备在加入到背包之后可以使用产生一定效果
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	void Use();
-	virtual void Use_Implementation();
-
-public:
-	UFUNCTION(BlueprintCallable)
-	void Interacted_Implementation(APawn* InstigatorPawn) override;
+	void Use(APawn* Target);
+	virtual void Use_Implementation(APawn* Target);
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

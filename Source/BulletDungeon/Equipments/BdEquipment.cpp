@@ -2,8 +2,9 @@
 
 
 #include "BdEquipment.h"
-
+#include "GameplayEffect.h"
 #include "BdInteractionInterface.h"
+#include "BulletDungeon/Character/BdCharacterBase.h"
 
 // Sets default values
 ABdEquipment::ABdEquipment()
@@ -13,11 +14,12 @@ ABdEquipment::ABdEquipment()
 	SkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>("MeshComponent");
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("StaticMeshComponent");
 	NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>("NiagaraComponent");
-	
+
 	RootComponent = SkeletalMeshComponent;
 	StaticMeshComponent->SetupAttachment(RootComponent);
 	NiagaraComponent->SetupAttachment(RootComponent);
 	Type = EEquipmentEnum::Default;
+	BaseNum = 1;
 }
 
 bool ABdEquipment::CanBeInteracted_Implementation()
@@ -35,8 +37,16 @@ void ABdEquipment::SetEquiper(APawn* NewEquiper)
 	Equiper = NewEquiper;
 }
 
-void ABdEquipment::Use_Implementation()
+void ABdEquipment::Use_Implementation(APawn* Target)
 {
+	auto TargetASC = Cast<ABdCharacterBase>(Target)->GetAbilitySystemComponent();
+	for (auto Effect : UseEffect)
+	{
+		FGameplayEffectContextHandle EffectContext = TargetASC->MakeEffectContext();
+		EffectContext.AddSourceObject(Target);
+		FGameplayEffectSpecHandle Handle = TargetASC->MakeOutgoingSpec(Effect.Key, Effect.Value, EffectContext);
+		TargetASC->ApplyGameplayEffectSpecToSelf(*Handle.Data.Get());
+	}
 }
 
 void ABdEquipment::Interacted_Implementation(APawn* InstigatorPawn)
@@ -48,6 +58,19 @@ void ABdEquipment::Interacted_Implementation(APawn* InstigatorPawn)
 void ABdEquipment::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void ABdEquipment::InteractionEffectApply(APawn* Target)
+{
+	auto TargetASC = Cast<ABdCharacterBase>(Target)->GetAbilitySystemComponent();
+	for (auto Effect : InteractionEffect)
+	{
+		FGameplayEffectContextHandle EffectContext = TargetASC->MakeEffectContext();
+		
+		EffectContext.AddSourceObject(Target);
+		FGameplayEffectSpecHandle Handle = TargetASC->MakeOutgoingSpec(Effect.Key, Effect.Value, EffectContext);
+		TargetASC->ApplyGameplayEffectSpecToSelf(*Handle.Data.Get());
+	}
 }
 
 // Called every frame

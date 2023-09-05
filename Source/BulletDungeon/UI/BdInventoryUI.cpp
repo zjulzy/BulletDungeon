@@ -6,6 +6,7 @@
 #include "Blueprint/WidgetTree.h"
 #include "BulletDungeon/AbilitySystem/BdAsyncTaskAttributeChanged.h"
 #include "BulletDungeon/Character/BdCharacterHero.h"
+#include "Kismet/GameplayStatics.h"
 
 void UBdInventoryUI::SetUpListen_Implementation()
 {
@@ -43,7 +44,7 @@ void UBdInventoryUI::NativeConstruct()
 	{
 		Items.Add(Cast<UBdInventoryItemUI>(ItemWidgets[i]));
 		Cast<UBdInventoryItemUI>(ItemWidgets[i])->Index = i;
-		Cast<UBdInventoryItemUI>(ItemWidgets[i])->OnSelectItem.AddUObject(this,&UBdInventoryUI::Selected);
+		Cast<UBdInventoryItemUI>(ItemWidgets[i])->OnSelectItem.AddUObject(this, &UBdInventoryUI::Selected);
 	}
 	SeletedIndex = -1;
 	InventoryComponent = Cast<UBdInventoryComponent>(Cast<ABdCharacterHero>(OwningCharacter)->GetInventoryComponent());
@@ -99,6 +100,49 @@ void UBdInventoryUI::UpdateItems(TArray<FInventoryItem>& Its)
 	// 基于传入list更新UI中的背包界面
 	for (int i = 0; i < Its.Num(); i++)
 	{
-		Items[i]->Activate(Its[i].ItemClass, Its[i].Num);
+		if(Its[i].Num)
+		{
+			Items[i]->Activate(Its[i].ItemClass, Its[i].Num);
+		}else
+		{
+			Items[i]->Deactivate();
+		}
+	}
+	// 需要取消选中
+	Selected(-1);
+}
+
+void UBdInventoryUI::Activate()
+{
+	SetVisibility(ESlateVisibility::Visible);
+	// 启用仓库UI需要先将游戏暂停
+	// 有两种暂停方式，一种是将时间膨胀设置为0，另一种则是直接将游戏暂停
+	// 这里采用前者，防止游戏暂停后不响应玩家的输入事件
+	// UGameplayStatics::SetGamePaused(this, true);
+	UGameplayStatics::SetGlobalTimeDilation(this,0);
+
+	// 启用鼠标以及相关点击和悬浮事件
+	ABdPlayerController* PC = Cast<ABdPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
+	PC->bShowMouseCursor = true;
+	PC->bEnableMouseOverEvents = true;
+	PC->bEnableClickEvents = true;
+}
+
+void UBdInventoryUI::Deactivate()
+{
+	SetVisibility(ESlateVisibility::Hidden);
+	UGameplayStatics::SetGlobalTimeDilation(this,1);
+	// 隐藏鼠标
+	ABdPlayerController* PC = Cast<ABdPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
+	PC->bShowMouseCursor = false;
+	PC->bEnableMouseOverEvents = false;
+	PC->bEnableClickEvents = false;
+}
+
+void UBdInventoryUI::UseSelectedItem()
+{
+	if (SeletedIndex != -1)
+	{
+		InventoryComponent->UseInventoryItem(SeletedIndex, 1);
 	}
 }

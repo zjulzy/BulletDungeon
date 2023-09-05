@@ -18,10 +18,9 @@ class BULLETDUNGEON_API ABdHealer : public ABdEquipment
 public:
 	ABdHealer();
 
-	virtual void Use_Implementation() override;
+	virtual void Use_Implementation(APawn* Target) override;
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<TSubclassOf<UGameplayEffect>> UseEffect;
+	
 	
 };

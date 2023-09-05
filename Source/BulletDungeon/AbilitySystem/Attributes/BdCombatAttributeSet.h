@@ -43,4 +43,10 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "BulletDungeon|Combat")
 	FGameplayAttributeData CriticalDamageRate;
 	ATTRIBUTE_ACCESSORS(UBdCombatAttributeSet, CriticalDamageRate)
+
+	// 伤害数值的中间值元属性
+	UPROPERTY(BlueprintReadOnly)
+	FGameplayAttributeData DamageValueCache;
+	ATTRIBUTE_ACCESSORS(UBdCombatAttributeSet, DamageValueCache)
+	
 };
