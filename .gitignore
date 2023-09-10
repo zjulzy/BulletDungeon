@@ -13,3 +13,4 @@ Releases
 *.suo
 *.xcodeproj
 *.xcworkspace
+*_BuiltData.uasset

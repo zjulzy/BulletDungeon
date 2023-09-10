@@ -152,6 +152,10 @@ void UBdInventoryComponent::ConsumeAmmo(int Num)
 			Num -= n;
 		}
 	}
+	if(Num>0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("库存中子弹不足与支撑消耗xueli"));
+	}
 	OnUpdateInventoryUI.Broadcast(InventoryItems);
 }
 

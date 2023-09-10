@@ -46,6 +46,11 @@ ABdCharacterAI::ABdCharacterAI()
 	weight = 0;
 }
 
+bool ABdCharacterAI::CanBeInteracted_Implementation()
+{
+	return false;
+}
+
 UAbilitySystemComponent* ABdCharacterAI::GetAbilitySystemComponent()
 {
 	return AbilitySystemComponent;

@@ -142,7 +142,7 @@ public:
 	void Set_WeaponState(EWeaponState NewState);
 
 	UFUNCTION(BlueprintCallable)
-	ABdAmmoBase* Primary_Attack();
+	EWeaponState Get_WeaponState();
 
 	UPROPERTY(BlueprintReadWrite)
 	FTimerHandle TH_Shoot;

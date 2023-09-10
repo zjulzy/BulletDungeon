@@ -38,12 +38,13 @@ void UBdInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	//使用玩家视角进行射线检测
 	EyeLocation = Controller->PlayerCameraManager->GetCameraLocation();
 	EyeRotation = Controller->GetControlRotation();
-	
+
 	FVector Destination = EyeLocation + 1000 * EyeRotation.Vector();
 	// DrawDebugLine(GetWorld(),EyeLocation,Destination,FColor::Red,false,2.0f);
 	FHitResult HitResult;
 	FCollisionObjectQueryParams CollisionObjectQueryParams;
 	CollisionObjectQueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
+	CollisionObjectQueryParams.AddObjectTypesToQuery(ECC_Pawn);
 
 	bool bIsHit = GetWorld()->LineTraceSingleByObjectType(HitResult, EyeLocation, Destination,
 	                                                      CollisionObjectQueryParams);
@@ -53,15 +54,12 @@ void UBdInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType
 		AActor* HitActor = HitResult.GetActor();
 		if (HitActor->Implements<UBdInteractionInterface>())
 		{
-			if (IBdInteractionInterface::Execute_CanBeInteracted(HitActor))
+			if (CurrentActor != HitActor)
 			{
-				if (!CurrentActor)
-				{
-					// GEngine->AddOnScreenDebugMessage(-1,2.0f,FColor::Red,FString("捕获"));
-					IsInteractable = true;
-					OnInteractionChange.Broadcast(CurrentActor, IsInteractable);
-				}
 				CurrentActor = HitActor;
+				// GEngine->AddOnScreenDebugMessage(-1,2.0f,FColor::Red,FString("捕获"));
+				IsInteractable = IBdInteractionInterface::Execute_CanBeInteracted(HitActor);
+				OnInteractionChange.Broadcast(CurrentActor, IsInteractable);
 			}
 		}
 		else

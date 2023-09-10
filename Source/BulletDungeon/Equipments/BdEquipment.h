@@ -33,7 +33,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	FText Description;
 
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite,EditAnywhere)
 	EEquipmentEnum Type;
 
 	UFUNCTION(BlueprintCallable)
@@ -64,7 +64,7 @@ protected:
 	void InteractionEffectApply(APawn* Target);
 
 	UPROPERTY(BlueprintReadWrite)
-	APawn* Equiper;
+	APawn* Equiper = nullptr;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int BaseNum;

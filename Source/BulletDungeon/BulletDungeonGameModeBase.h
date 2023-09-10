@@ -30,7 +30,10 @@ public:
 	//在进入新的关卡之后通知UI等进行刷新
 	UPROPERTY(BlueprintCallable)
 	FRefreshLevel RefreshLevel;
-
+	
+	UFUNCTION(BlueprintCallable)
+	int GetMaxLevel();
+	
 	ABulletDungeonGameModeBase();
 	virtual void BeginPlay() override;
 	

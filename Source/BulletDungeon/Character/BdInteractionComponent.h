@@ -16,7 +16,7 @@ public:
 	// Sets default values for this component's properties
 	UBdInteractionComponent();
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FonInteractionChange,AActor* ,TargetActor,bool,IsInteractable);
-
+	
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

@@ -4,6 +4,11 @@
 #include "BulletDungeonGameModeBase.h"
 
 
+int ABulletDungeonGameModeBase::GetMaxLevel()
+{
+	return MaxLevel;
+}
+
 ABulletDungeonGameModeBase::ABulletDungeonGameModeBase()
 {
 	PlayerStateClass = ABdPlayerState::StaticClass();

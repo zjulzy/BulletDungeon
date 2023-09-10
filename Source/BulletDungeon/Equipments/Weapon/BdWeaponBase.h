@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BdShootEffect.h"
 #include "GameplayTagContainer.h"
 #include "BulletDungeon/AbilitySystem/Abilities/BdGameplayAbility.h"
 #include "BulletDungeon/Equipments/Ammo/BdAmmoBase.h"
@@ -30,8 +31,10 @@ class BULLETDUNGEON_API ABdWeaponBase : public ABdEquipment
 
 public:
 	ABdWeaponBase();
+	virtual ~ABdWeaponBase() override;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="射击")
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="BulletDungeon|Weapon")
 	float ShootSpeed;
 
 	UPROPERTY()
@@ -81,7 +84,33 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Outpost|Weapon")
 	EWeaponType WeaponType;
 
+	UFUNCTION(BlueprintCallable)
+	ABdAmmoBase* Primary_Attack();
+	
+	UFUNCTION(BlueprintCallable)
+	void ApplyCameraOffset(float Pitch, float Yaw);
+
+	bool bIsFiring = false;
+	UFUNCTION(BlueprintCallable)
+	void EndFire();
+	virtual void Tick(float DeltaSeconds) override;
 protected:
+#pragma region recoil
+
+	// 统计之前射出的子弹数，用于调节后坐力，停止开火后逐渐衰减
+	float CurrentFiredAmmo = 0;
+	// 统计停火后“休息”时间
+	float SecondsSinceStopFire = 0;
+	// 记录停止开火时的累计射击子弹数
+	float FiredAmmoWhenStop = 0;
+	// 统计镜头偏移量
+	float PitchOffset = 0, YawOffset = 0;
+	// 记录停止开火时的镜头偏移
+	float PitchOffsetWhenStop = 0, YawOffsetWhenStop = 0;
+	UPROPERTY(Instanced, EditDefaultsOnly, Category="BulletDungeon|Weapon")
+	UBdShootEffect* RecoilInstance;
+	
+#pragma endregion
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Outpost|Weapon")
 	TSubclassOf<ABdAmmoBase> AmmoClass;
 

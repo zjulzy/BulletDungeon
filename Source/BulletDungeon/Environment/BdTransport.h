@@ -3,15 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BulletDungeon/Equipments/BdInteractionInterface.h"
 #include "GameFramework/Actor.h"
 #include "BdTransport.generated.h"
 
 UCLASS()
-class BULLETDUNGEON_API ABdTransport : public AActor
+class BULLETDUNGEON_API ABdTransport : public AActor, public IBdInteractionInterface
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	ABdTransport();
 
@@ -21,13 +22,13 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* BaseMeshComponent;
-	
-	
-	UFUNCTION(BlueprintNativeEvent,BlueprintCallable)
+
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void TravelToNewLevel(const FString& TargetLevel, APlayerController* Controller);
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
+	
 };

@@ -1,4 +1,6 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice
+//
+// in the Description page of Project Settings.
 
 
 #include "BdGEReloadExecutionCalc.h"
@@ -21,7 +23,6 @@ struct FBdReloadStatics
 
 		// Capture optional Damage set on the damage GE as a CalculationModifier under the ExecutionCalculation
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UBdWeaponAttributeSet, MaxAmmo, Target, true);
-
 
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UBdWeaponAttributeSet, ReserveAmmo, Target, true);
 		// Capture the Target's Health. Don't snapshot.
@@ -96,7 +97,7 @@ void UBdGEReloadExecutionCalc::Execute_Implementation(const FGameplayEffectCusto
 		NewInventoryAmmo = InventoryAmmo - Cost;
 		res = Cost;
 	}
-
+	
 	// TODO: 去背包中找子弹进行消耗
 	auto PlayerPawn = SourceAbilitySystemComponent->GetAvatarActor();
 	auto InventoryComponent = Cast<UBdInventoryComponent>(Cast<ABdCharacterHero>(PlayerPawn)->GetInventoryComponent());
@@ -106,4 +107,5 @@ void UBdGEReloadExecutionCalc::Execute_Implementation(const FGameplayEffectCusto
 	OutExecutionOutput.AddOutputModifier(
 		FGameplayModifierEvaluatedData(ReloadStatics().InventoryAmmoProperty, EGameplayModOp::Override,
 		                               NewInventoryAmmo));
+	
 }

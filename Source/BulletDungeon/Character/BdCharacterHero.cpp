@@ -311,58 +311,11 @@ void ABdCharacterHero::Set_WeaponState(EWeaponState NewState)
 	WeaponState = NewState;
 }
 
-ABdAmmoBase* ABdCharacterHero::Primary_Attack()
+EWeaponState ABdCharacterHero::Get_WeaponState()
 {
-	ABdAmmoBase* res = nullptr;
-	if (WeaponState != EWeaponState::No_Weapon)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Black,TEXT("步枪攻击"));
-		MainWeapon->Shoot();
-		SetActorRotation(GetControlRotation());
-		OnChangeWeaponState.Broadcast(WeaponState, Ammos, AmmoMax, AmmoRemain);
-		//发射弹丸
-		//碰撞检测相关参数---------------------------------------------------------------------
-		FCollisionShape CollsionSphere;
-		CollsionSphere.SetSphere(20.0f);
-
-		FCollisionObjectQueryParams ObjectQueryParams;
-		ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
-		ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
-		ObjectQueryParams.AddObjectTypesToQuery(ECC_Pawn);
-
-
-		FCollisionQueryParams QueryParams;
-		QueryParams.AddIgnoredActor(this);
-		for (auto Weapon : InventoryComponent->GetWeaponList())
-		{
-			QueryParams.AddIgnoredActor(Weapon);
-		}
-		QueryParams.AddIgnoredActor(this->MainWeapon);
-
-		FVector StartLocation = CameraComponent->GetComponentLocation();
-		FVector EndLocation = StartLocation + GetControlRotation().Vector() * 5000;
-		//碰撞检测以及spawn--------------------------------------------------------------------
-		FHitResult HitResult;
-		if (GetWorld()->SweepSingleByObjectType(HitResult, StartLocation, EndLocation, FQuat::Identity,
-		                                        ObjectQueryParams, CollsionSphere, QueryParams))
-		{
-			EndLocation = HitResult.ImpactPoint;
-		}
-		//spawn相关参数设置--------------------------------------------------------------------
-		FVector WeaponLocation = GetMesh()->GetSocketLocation("weapon_r");
-		FRotator Rotation = FRotationMatrix::MakeFromX(EndLocation - WeaponLocation).Rotator();
-		FTransform SpawnTM = FTransform(Rotation, WeaponLocation);
-
-		FActorSpawnParameters SpawnParameters;
-		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		SpawnParameters.Instigator = this;
-
-		res = Cast<ABdAmmoBase>(GetWorld()->SpawnActor<AActor>(MainWeapon->GetAmmoClass(), SpawnTM, SpawnParameters));
-		UKismetSystemLibrary::PrintString(this, res ? "spawn success" : "spawn fail");
-		//发射弹丸结束----------------------------------------------------------------------------
-	}
-	return res;
+	return WeaponState;
 }
+
 
 void ABdCharacterHero::TestAddCritical(float Value)
 {
